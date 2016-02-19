@@ -1,5 +1,7 @@
 package strategy
 {
+	import flash.events.Event;
+
 	public class StrategyFloor
 	{
 		private var w:uint,h:uint;
@@ -25,35 +27,67 @@ package strategy
 			agents.push(newAgent);
 		}
 		
+		/**Add all event listeners to this agent*/
 		private function addAllListenets(newAgent:AgentBase):void
 		{
-			// TODO Auto Generated method stub
-			
-		}
+			newAgent.addEventListener(AgentCall.REQUEST_OTHER_AGENTS,returnNearAgents);
+			newAgent.addEventListener(AgentCall.IM_DEAD,agentIsDead);
+		}		
 		
+		/**This agent is dead. remove all listeners*/
 		private function removeAllListeners(removedAgent:AgentBase):void
 		{
-			// TODO Auto Generated method stub
-			
+			removedAgent.removeEventListener(AgentCall.REQUEST_OTHER_AGENTS,returnNearAgents);
+			removedAgent.removeEventListener(AgentCall.IM_DEAD,agentIsDead);
 		}
 		
 		public function step():void
 		{
-			var l:uint = agents.length; 
-			var removedAgent:AgentBase ;
-			for(var i = 0 ; i<l ; i++)
+			//var l:uint = agents.length; 
+			for(var i = 0 ; i<agents.length ; i++)
 			{
 				agents[i].step();
-				
-				if(agents[i].isDead())
+			}
+		}
+		
+		/**This agent is dead*/
+		protected function agentIsDead(event:AgentCall):void
+		{
+			var myAgent:AgentBase = event.target as AgentBase ;
+			var agentIndex:int = agents.indexOf(myAgent);
+			var removedAgent:AgentBase ;
+			removedAgent = agents.splice(agentIndex,1)[0] ;
+			removeAllListeners(removedAgent);
+			removedAgent = null ;
+		}
+		
+		
+		/**The agent need to know who is near him*/
+		protected function returnNearAgents(event:AgentCall):void
+		{
+			var myAgent:AgentBase = event.target as AgentBase ;
+			var agentListForHim:Vector.<AgentBase> = agents.concat();
+			agentListForHim.sort(nearAgents);
+			
+			function nearAgents(agent1:AgentBase,agent2:AgentBase):int
+			{
+				var dist1:Number = agent1.getDistanceFrom(myAgent);
+				var dist2:Number = agent2.getDistanceFrom(myAgent);
+				if(dist1<dist2)
 				{
-					removedAgent = agents.splice(i,1)[0] ;
-					removeAllListeners(removedAgent);
-					removedAgent = null ;
-					l--;
-					i--;
+					return -1;
+				}
+				else if(dist1>dist2)
+				{
+					return 1;
+				}
+				else
+				{
+					return 0 ;
 				}
 			}
+			
+			myAgent.getOtherAgents(agentListForHim);
 		}
 		
 	}
