@@ -10,17 +10,19 @@ package strategy
 		/**Full list of agents*/
 		public var agents:Vector.<AgentBase> ;
 		/**Only the building agents*/
-		public var 	buildings_sortY:Vector.<AgentBase> ,
-					buildings_sortX:Vector.<AgentBase> ;
+		public var 	buildings:Vector.<AgentBase> ;
+		
+		public var blockedList:Vector.<Boolean> ;
 		
 		public function StrategyFloor(W:uint,H:uint)
 		{
 			w = W ;
 			h = H ;
 			
+			blockedList = new Vector.<Boolean>(w*h);
+			
 			agents = new Vector.<AgentBase>();
-			buildings_sortY = new Vector.<AgentBase>();
-			buildings_sortX = new Vector.<AgentBase>();
+			buildings = new Vector.<AgentBase>();
 		}
 		
 		/**x0: x position to start agent<br>
@@ -34,15 +36,25 @@ package strategy
 			agents.push(newAgent);
 			if(!isPassable)
 			{
-				buildings_sortY.push(newAgent);
-				buildings_sortX.push(newAgent);
-				
-				buildings_sortY.sort(sortBuildingByY)
-				buildings_sortX.sort(sortBuildingByX)
+				buildings.push(newAgent);
+				makeItNotPassable(x0,y0);
+				//No need to sort, I add an other list to manage blocked buildings. may be I remove the bulding list at all
+				//buildings.sort(sortBuildingByY)
 			}
 		}
 		
-			/**Sort building by Y*/
+		private function makeItNotPassable(x:uint,y:uint):void
+		{
+			blockedList[y*w+x] = true ;
+		}
+		
+		private function makeIfPassable(x:uint,y:uint):void
+		{
+			blockedList[y*w+x] = false ;
+		}
+		
+		
+			/**Sort building by Y
 			private function sortBuildingByY(agentA:AgentBase,agentB:AgentBase):int
 			{
 				if(agentA.y<agentB.y)
@@ -54,8 +66,8 @@ package strategy
 					return 1;
 				}
 				return 0;
-			}
-			/**Sort building by X*/
+			}*/
+			/**Sort building by X
 			private function sortBuildingByX(agentA:AgentBase,agentB:AgentBase):int
 			{
 				if(agentA.x<agentB.x)
@@ -67,7 +79,7 @@ package strategy
 					return 1;
 				}
 				return 0;
-			}
+			}*/
 		
 		/**Add building to the stage.<br>
 		 * the x and y values will pass as uint*/
@@ -94,59 +106,191 @@ package strategy
 		protected function guiedHim(event:AgentCall):void
 		{
 			var myAgent:AgentBase = event.target as AgentBase ;
-			var targetAgent:AgentBase = event.targetAgent ;
 			var agentStep:Number = event.agentStep ;
 			var x0:Number = myAgent.x;
 			var y0:Number = myAgent.y;
-			var targetX:Number = targetAgent.x ;
-			var targetY:Number = targetAgent.y ;
+			var targetX:Number ;
+			var targetY:Number ;
 			
-			var deltaPoint:Point = new Point(targetX-x0,targetY-y0);
-			var distance:Number = deltaPoint.length ;
-			var dx:Number = (deltaPoint.x/distance)*agentStep ;
-			var dy:Number = (deltaPoint.y/distance)*agentStep ;
 			
-			var currentX:uint = x0 ;
-			var currentY:uint = y0 ;
+			targetX = event.targetAgent.x;
+			targetY = event.targetAgent.y;
 			
-			var moved:Number = 0 ;
-			var hittedWall:AgentBase ;
-			do{
-				moved+=agentStep ;
-				currentX+=dx;
-				currentY+=dy;
-				if((hittedWall = isPassable(currentX,currentY)) != null)
-				{
-					trace("The agent cannot pass this tile");
-					/*if(hittedWall.x<x0)
+			var deltaPoint:Point;
+			var distance:Number ;
+			var dx:Number ;
+			var dy:Number ;
+			
+			//Second while variables
+			var currentX:Number ;
+			var currentY:Number ;
+			/**Controll how much Agent moved*/
+			var moved:Number ;
+			/**Controll if Agent should change its direction*/
+			var isDirectionChanged:Boolean ;
+			
+			var hangController:uint = 0 ;
+			
+			do
+			{
+				hangController++;
+				
+				deltaPoint = new Point(targetX-x0,targetY-y0);
+				distance = deltaPoint.length;
+				dx = (deltaPoint.x/distance)*agentStep;
+				dy = (deltaPoint.y/distance)*agentStep;
+				
+				currentX = x0;
+				currentY = y0;
+				
+				moved = 0;
+				isDirectionChanged = false;
+				do{
+					moved+=agentStep ;
+					currentX+=dx;
+					currentY+=dy;
+					trace("Controll for me : "+myAgent.teamColor.toString(16));
+					trace("Controll : "+currentX,currentY);
+					if(!isPassable(currentX,currentY))
 					{
-						findClosestFreeTile(currentX,currentY,);
-					}*/
+						trace("I cannot pass : "+myAgent.teamColor.toString(16));
+						trace("y0 : "+y0+" currentY : "+currentY+" targetY : "+targetY);
+						var foundedPoint:Point;
+						if((uint(y0)<=currentY && currentY<=uint(targetY)) || (uint(y0)>=currentY && currentY>=uint(targetY)))
+						{
+							foundedPoint = findClosestFreeTile(currentX,currentY,false,true);
+						}
+						else
+						{
+							foundedPoint = findClosestFreeTile(currentX,currentY,true,false);
+						}
+						targetX = foundedPoint.x;
+						targetY = foundedPoint.y;
+						trace("New direction is : "+foundedPoint);
+						isDirectionChanged = true ;
+						break;
+					}
+				}while(moved<distance);
+				
+				if(isDirectionChanged)
+				{
+					//Agent must select an other direction
+					continue;
 				}
-			}while(moved<distance);
+				else
+				{
+					break;
+				}
+			}while(true && hangController<100);
+			
+			trace("hangController : "+hangController);
+				
+				
 			
 			myAgent.stepForwardBasedOnGUIDE_ME_request(dx,dy);
 		}
 		
-		/**Find the closest wall by the entered direction*/
-		private function findClosestFreeTile(blockedWallX:uint,blockedWallY:uint,dx:Boolean=false,dy:Boolean=false):Point
+		/**Find the closest wall by the entered direction<br>
+		 * dx meanse Agent should find his path in the Y direction and dy means the y direction is fix and agent should find his path on the X direction*/
+		private function findClosestFreeTile(blockedX:uint,blockedY:uint,dx:Boolean=false,dy:Boolean=false):Point
 		{
-			trace("search for the free tile based on dx or dy");
+			trace("Find base point instead of "+blockedX,blockedY+" by the direction x :"+dx+' or y :'+dy);
+			var nextIndex:uint ;
+			var prevIndex:uint ; 
+			var exiter:Boolean ;
+			if(dy)
+			{
+				nextIndex = prevIndex = blockedX;
+				do
+				{
+					exiter = false ;
+					nextIndex++;
+					prevIndex--;
+					if(nextIndex<w)
+					{
+						exiter = true ;
+						if(isPassable(nextIndex,blockedY))
+						{
+							return new Point(nextIndex,blockedY);
+						}
+					}
+					if(prevIndex>=0)
+					{
+						exiter = true ;
+						if(isPassable(prevIndex,blockedY))
+						{
+							return new Point(prevIndex,blockedY);
+						}
+					}
+				}while(exiter)
+			}
+			else if(dx)
+			{
+				nextIndex = prevIndex = blockedY;
+				do
+				{
+					exiter = false ;
+					nextIndex++;
+					prevIndex--;
+					if(nextIndex<h)
+					{
+						exiter = true ;
+						if(isPassable(blockedX,nextIndex))
+						{
+							return new Point(blockedX,nextIndex);
+						}
+					}
+					if(prevIndex>=0)
+					{
+						exiter = true ;
+						if(isPassable(blockedX,prevIndex))
+						{
+							return new Point(blockedX,prevIndex);
+						}
+					}
+				}while(exiter)
+			}
+			throw "No direction enterd here";
+			/*var agentIndex:int = buildings_sortX.indexOf(currentAgent) ;
+			var nextIndex:int = agentIndex ;
+			var prevIndex:int = agentIndex ;
+			var maxBuildings:uint = buildings_sortX.length ;
+			var exiter:uint ;
+			if(dy)
+			{
+				//buildings_sortX
+				do
+				{
+					nextIndex++;
+					prevIndex--;
+					exiter = 0 ;
+					if(nextIndex<maxBuildings)
+					{
+						if(buildings_sortX[nextIndex].
+						exiter++;
+					}
+					if(prevIndex>=0)
+					{
+						exiter++;
+					}
+				}while(exiter!=0)
+			}*/
 			return new Point();
 		}
 		
 		/**Returns the blucker tile if this tile is not passable*/
-		private function isPassable(x:uint,y:uint):AgentBase
+		private function isPassable(x:uint,y:uint):Boolean
 		{
-			var l:uint = buildings_sortY.length ;
+			return !blockedList[y*w+x];
+			/*var l:uint = buildings.length ;
 			for(var i = 0 ; i<l ; i++)
 			{
-				if(buildings_sortY[i].x == x && buildings_sortY[i].y == y)
+				if(buildings[i].x == x && buildings[i].y == y)
 				{
-					return buildings_sortY[i] ;
+					return buildings[i] ;
 				}
 			}
-			return null ;
+			return null ;*/
 		}
 		
 		/**This agent is dead. remove all listeners*/
