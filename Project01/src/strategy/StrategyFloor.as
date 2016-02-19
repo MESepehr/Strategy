@@ -1,6 +1,7 @@
 package strategy
 {
 	import flash.events.Event;
+	import flash.geom.Point;
 
 	public class StrategyFloor
 	{
@@ -32,13 +33,30 @@ package strategy
 		{
 			newAgent.addEventListener(AgentCall.REQUEST_OTHER_AGENTS,returnNearAgents);
 			newAgent.addEventListener(AgentCall.IM_DEAD,agentIsDead);
+			newAgent.addEventListener(AgentCall.GUIDE_ME,guiedHim);
 		}		
+		
+		/**Guide this agent forward*/
+		protected function guiedHim(event:AgentCall):void
+		{
+			var myAgent:AgentBase = event.target as AgentBase ;
+			var targetAgent:AgentBase = event.targetAgent ;
+			var agentStep:Number = event.agentStep ;
+			
+			var deltaPoint:Point = new Point(targetAgent.x-myAgent.x,targetAgent.y-myAgent.y);
+			var distance:Number = deltaPoint.length ;
+			var dx:Number = (deltaPoint.x/distance)*agentStep ;
+			var dy:Number = (deltaPoint.y/distance)*agentStep ;
+			
+			myAgent.stepForwardBasedOnGUIDE_ME_request(dx,dy);
+		}
 		
 		/**This agent is dead. remove all listeners*/
 		private function removeAllListeners(removedAgent:AgentBase):void
 		{
 			removedAgent.removeEventListener(AgentCall.REQUEST_OTHER_AGENTS,returnNearAgents);
 			removedAgent.removeEventListener(AgentCall.IM_DEAD,agentIsDead);
+			removedAgent.removeEventListener(AgentCall.GUIDE_ME,guiedHim);
 		}
 		
 		public function step():void

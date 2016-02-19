@@ -31,7 +31,7 @@ package strategy
 		
 		private var weaponDamage:Number ;
 		
-		public function AgentBase(x0:Number,y0:Number,TeamColor:uint,myMoveSteps:Number=0.5,myRunSteps:Number=1,myHitRange:Number=2,myLife:Number=100,myWeaponDamage:Number=20)
+		public function AgentBase(x0:Number,y0:Number,TeamColor:uint,myMoveSteps:Number=0.5,myRunSteps:Number=1,myHitRange:Number=1,myLife:Number=100,myWeaponDamage:Number=20)
 		{
 			x = x0 ;
 			y = y0 ;
@@ -74,10 +74,11 @@ package strategy
 		/**Move the agent one step forward*/
 		public function step():void
 		{
+			this.dispatchEvent(new AgentCall(AgentCall.REQUEST_OTHER_AGENTS));
 			if(targetAgent==null || targetAgent.isDead())
 			{
+				targetAgent = null ;
 				mode = 2;
-				this.dispatchEvent(new AgentCall(AgentCall.REQUEST_OTHER_AGENTS));
 			}
 			else if(isInMyHitRange(targetAgent))
 			{
@@ -86,25 +87,16 @@ package strategy
 			}
 			else
 			{
-				mode = 5 ;
-				var currentStep:Number = getStep() ;
-				if(targetAgent.x>x)
-				{
-					x+=currentStep;
-				}
-				else
-				{
-					x-=currentStep;
-				}
-				if(targetAgent.y>y)
-				{
-					y+=currentStep;
-				}
-				else
-				{
-					y-=currentStep;
-				}
+				mode = 4 ;
+				this.dispatchEvent(new AgentCall(AgentCall.GUIDE_ME,targetAgent,getStep()));
 			}
+		}
+		
+		/**Step agent forward based on his requestt*/
+		internal function stepForwardBasedOnGUIDE_ME_request(dx:Number,dy:Number):void
+		{
+			x+=dx;
+			y+=dy;
 		}
 		
 		/**Returns true if this agent is in my range*/
