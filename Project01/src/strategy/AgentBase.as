@@ -8,6 +8,7 @@ package strategy
 	{
 		public var x:Number,y:Number;
 		
+		/**The color of black of wight is used for free team agents*/
 		public var teamColor:uint ;
 		
 		private var otherAgents:Vector.<AgentBase> ;
@@ -31,17 +32,49 @@ package strategy
 		
 		private var weaponDamage:Number ;
 		
-		public function AgentBase(x0:Number,y0:Number,TeamColor:uint,myMoveSteps:Number=0.5,myRunSteps:Number=1,myHitRange:Number=1,myLife:Number=100,myWeaponDamage:Number=20)
+		
+		/**Means the troopers can pass from its tile or not*/
+		public var isPassable:Boolean ;
+		
+		/**It is true if the agent has a team*/
+		public var hasTeam:Boolean = false ;
+		
+		public function AgentBase(x0:Number,y0:Number,TeamColor:uint,IsPassable:Boolean=true,CanMove:Boolean=true,myMoveSteps:Number=0.5,myRunSteps:Number=1,myHitRange:Number=1,myLife:Number=100,myWeaponDamage:Number=20)
 		{
 			x = x0 ;
 			y = y0 ;
+			if(!CanMove)
+			{
+				x = uint(x);
+				y = uint(y);
+			}
 			moveSpeed = myMoveSteps ;
 			runSpeed = myRunSteps ;
-			teamColor = TeamColor ;
 			hitRange = myHitRange ;
 			life = myLife;
 			mode = 1 ;
 			weaponDamage = myWeaponDamage ;
+			isPassable = IsPassable;
+			
+			setTeam(TeamColor);
+			
+			if(!CanMove)
+			{
+				mode = 0 ;
+			}
+		}
+		
+		internal function setTeam(TeamColor:uint):void
+		{
+			teamColor = TeamColor ;
+			if(teamColor!=0 && teamColor!=0xffffff)
+			{
+				hasTeam = true ;
+			}
+			else
+			{
+				hasTeam = false ;
+			}
 		}
 		
 		public function hitMe(damage:Number):void
@@ -74,6 +107,11 @@ package strategy
 		/**Move the agent one step forward*/
 		public function step():void
 		{
+			if(mode==0)
+			{
+				//Agent is in a deeep sleeeep
+				return ;
+			}
 			this.dispatchEvent(new AgentCall(AgentCall.REQUEST_OTHER_AGENTS));
 			if(targetAgent==null || targetAgent.isDead())
 			{
@@ -118,7 +156,7 @@ package strategy
 			otherAgents = agents ;
 			for(var i = 0 ; i<otherAgents.length ; i++)
 			{
-				if(otherAgents[i].teamColor!=teamColor)
+				if(hasTeam && otherAgents[i].hasTeam && otherAgents[i].teamColor!=teamColor)
 				{
 					targetAgent = otherAgents[i];
 					break;

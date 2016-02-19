@@ -33,6 +33,17 @@ package
 			this.addEventListener(Event.ENTER_FRAME,anim);
 			stage.addEventListener(MouseEvent.MOUSE_DOWN,addAgentTo);
 			stage.addEventListener(MouseEvent.RIGHT_MOUSE_DOWN,addAgent2To);
+			stage.addEventListener(MouseEvent.MOUSE_WHEEL,addBuilding,false,100);
+		}
+		
+		protected function addBuilding(event:MouseEvent):void
+		{
+			// TODO Auto-generated method stub
+			trace("Create building");
+			event.stopImmediatePropagation();
+			var mx:uint = strategyBitmap.mouseX ;
+			var my:uint = strategyBitmap.mouseY ;
+			myStrategy.addBuilding(mx-1,my-1,3,3,0xffffff);
 		}
 		
 		protected function addAgent2To(event:MouseEvent):void
@@ -42,7 +53,6 @@ package
 			event.stopImmediatePropagation();
 			var X:Number = (strategyBitmap.mouseX);
 			var Y:Number = (strategyBitmap.mouseY);
-			trace("Add Agent to : "+X,Y);
 			myStrategy.addAgent(X,Y,0x0000ff)
 		}
 		
