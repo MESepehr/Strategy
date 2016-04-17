@@ -28,10 +28,10 @@ package strategy
 		/**x0: x position to start agent<br>
 		 * y0: y position to start agent<br>
 		 * teamColor: uses to define teams and their own color. the 0 is no team*/
-		public function addAgent(x0:Number,y0:Number,teamColor:uint,isPassable:Boolean=true,canMove:Boolean=true):void
+		public function addAgent(x0:Number,y0:Number,teamColor:uint,isPassable:Boolean=true,canMove:Boolean=true,myMoveSteps:Number=0.5,myRunSteps:Number=1,myHitRange:Number=1,myLife:Number=100,myWeaponDamage:Number=20):void
 		{
 			//I need agent type to
-			var newAgent:AgentBase = new AgentBase(x0,y0,teamColor,isPassable,canMove);
+			var newAgent:AgentBase = new AgentBase(x0,y0,teamColor,isPassable,canMove,myMoveSteps,myRunSteps,myHitRange,myLife,myWeaponDamage);
 			addAllListenets(newAgent);
 			agents.push(newAgent);
 			if(!isPassable)

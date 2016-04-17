@@ -60,7 +60,7 @@ package
 		{
 			var X:Number = (strategyBitmap.mouseX);
 			var Y:Number = (strategyBitmap.mouseY);
-			myStrategy.addAgent(X,Y,0xff0000,true,false)
+			myStrategy.addAgent(X,Y,0xff0000,true,false,1,2,1,200,30)
 		}
 		
 		/**Step strategy floor forward and draw the debug bitmap fo it*/
