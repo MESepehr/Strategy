@@ -22,7 +22,7 @@ rem %adt% -package -target apk-captive-runtime -storetype pkcs12 -storepass 1838
 
 
 set mobprevision="D:\Sepehr\ElectroPeik\Certificate\electropeyc_dis.mobileprovision"
-
+pause
 set targ=ipa-debug
 rem ipa-ad-hoc    ipa-app-store   ipa-debug -connect 192.168.0.15
 

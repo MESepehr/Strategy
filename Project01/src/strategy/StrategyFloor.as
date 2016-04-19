@@ -15,6 +15,7 @@ package strategy
 		{
 			StepHandler.w = W ;
 			StepHandler.h = H ;
+			StepHandler.totalPixels = W*H ;
 			
 			StepHandler.blockedList = new Vector.<Boolean>(StepHandler.w*StepHandler.h);
 			
@@ -72,13 +73,6 @@ package strategy
 			StepHandler.isReachable(myAgent.x,myAgent.y,event.targetAgent.x,event.targetAgent.y,agentStep);
 				
 			myAgent.stepForwardBasedOnGUIDE_ME_request(StepHandler.dx,StepHandler.dy);
-		}
-		
-		/**Create a path to the destination*/
-		private function getAvailableRoat(fromX:uint,fromY:uint,toX:uint,toY:uint):Vector.<Point>
-		{
-			//TODO
-			return new Vector.<Point>();
 		}
 		
 		
