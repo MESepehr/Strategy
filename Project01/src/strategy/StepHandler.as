@@ -17,6 +17,8 @@ package strategy
 		/**The last item speed from isReachble function*/
 		internal static var dx:Number,
 							dy:Number ;
+							
+		private static var finalX:uint,finalY:uint,finalL:uint;
 		
 		/**The position of blocked tile in the path*/
 		internal static var blockexX:int,blockedY:int;
@@ -25,7 +27,7 @@ package strategy
 		/**Controll how much Agent moved*/
 		internal static var moved:Number ;
 		
-		private static var i:int,j:int;
+		private static var i:int,j:int,k:int;
 		
 		private static var controlledTiles:Vector.<uint> ;
 		
@@ -76,43 +78,46 @@ package strategy
 		private static function startToGetAvailableRoat(fromX:uint,fromY:uint,toX:uint,toY:uint):void
 		{
 			controlledTiles = new Vector.<uint>();
+			controlRoat = new Vector.<uint>();
 			finalRoat = new Vector.<uint>();
 			trace("Final road resets");
-			getAvailableRoat(fromX,fromY,toX,toY);
+			finalX = toX;
+			finalY = toY;
+			finalL = pointToLinier(toX,toY);
+			controlRoat.push(pointToLinier(fromX,fromY));
+			getAvailableRoat();
 			finalRoat.reverse();
 			trace("Road founds : "+finalRoat);
 		}
 		
 		
 		/**Create a path to the destination. the values are the linier values that have to change to the x and y again*/
-		internal static function getAvailableRoat(fromX:uint,fromY:uint,toX:uint,toY:uint):Boolean
+		internal static function getAvailableRoat():Boolean
 		{
-			trace(" Start from : "+fromX,fromY);
 			var myLin:uint ;
-			var myX:uint,myY:uint;
-			for(i = -1 ; i<2 ; i++)
+			
+			for( k=0 ; k < controlRoat.length ; i++ )
 			{
-				for(j = -1;j<2;j++)
+				if(controlRoat[i]==finalL)
 				{
-					myX = fromX+i ;
-					myY = fromY+j ;
-					myLin = pointToLinier(myX,myY) ;
-					trace("controlledTiles : "+controlledTiles);
-					trace("myLin : "+myLin);
-					if(myX>0 && myX<w && myY>0 && myY<h && controlledTiles.indexOf(myLin)==-1 && !blockedList[myLin])
+					finalRoat.push(myLin)
+					return true ;
+				}
+				for(i = -1 ; i<2 ; i++)
+				{
+					for(j = -1;j<2;j++)
 					{
-						controlledTiles.push(myLin);
-						if(myX==toX && myY==toY)
+						myLin = controlRoat[k]+i+j*w ;
+						trace("controlledTiles : "+myLin);
+						if(myLin>=0 && myLin<totalPixels && controlledTiles.indexOf(myLin)==-1 && !blockedList[myLin])
 						{
-							trace("Got it!!")
-							finalRoat.push(myLin)
-							return true
-						}
-						else if(getAvailableRoat(myX,myY,toX,toY))
-						{
-							trace("Feel the road");
-							finalRoat.push(myLin);
-							return true ;
+							controlledTiles.push(myLin);
+							if(myLin==finalL)
+							{
+								trace("Got it!!")
+								finalRoat.push(myLin)
+								return true
+							}
 						}
 					}
 				}
