@@ -35,10 +35,21 @@ package strategy
 		
 		private static var controlRoat:Vector.<uint> ;
 		
-		internal static function isReachable(fromX:uint,fromY:uint,toX:uint,toY:uint,agentStep:Number):Boolean
+		private static var passControllLin:uint; 
+		
+		internal static function isReachable(fromX:Number,fromY:Number,toX:Number,toY:Number,agentStep:Number):Boolean
 		{
+			trace("fromX : "+fromX);
+			trace("fromY : "+fromY);
+			trace("toY : "+toY);
+			trace("toX : "+toX);
 			deltaPoint = new Point(toX-fromX,toY-fromY);
 			distance = deltaPoint.length;
+			if(distance==0)
+			{
+				dx = dy = 0 ;
+				return false ;
+			}
 			dx = (deltaPoint.x/distance)*agentStep;
 			dy = (deltaPoint.y/distance)*agentStep;
 			
@@ -56,8 +67,9 @@ package strategy
 						trace("Now I have to move forward : "+finalRoat);
 						if(finalRoat.length>0)
 						{
-							toY = finalRoat[0]%w ;
-							toX = finalRoat[0]-w*toY;
+							trace("finalRoat[0] : "+finalRoat[0]);
+							toX = finalRoat[0]%w ;
+							toY = (finalRoat[0]-toX)/w;
 							trace("Next step is : "+toX,toY+" from "+fromX,fromY);
 							deltaPoint = new Point(toX-fromX,toY-fromY);
 							dx = (deltaPoint.x/distance)*agentStep;
@@ -80,6 +92,9 @@ package strategy
 			controlledTiles = new Vector.<uint>();
 			controlRoat = new Vector.<uint>();
 			finalRoat = new Vector.<uint>();
+			//Debug line
+				finalRoat.push(1);
+				return ;
 			trace("Final road resets");
 			finalX = toX;
 			finalY = toY;
@@ -157,7 +172,12 @@ package strategy
 		internal static function isPassable(x:uint,y:uint):Boolean
 		{
 			trace("is passable? : "+x,y);
-			return !blockedList[y*w+x];
+			passControllLin = y*w+x ;
+			if(passControllLin<0 || passControllLin>=totalPixels)
+			{
+				return false ;
+			}
+			return !blockedList[passControllLin];
 		}
 		
 		internal static function makeItNotPassable(x:uint,y:uint):void

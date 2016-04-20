@@ -15,7 +15,7 @@ package
 		private var strategyFloor:BitmapData,
 					strategyBitmap:Bitmap;
 		
-		private const W:uint = 10,H:uint=10;
+		private const W:uint = 20,H:uint=20;
 		
 		public function ZombyLand()
 		{
