@@ -1,6 +1,7 @@
 package strategy
 {
 	import flash.geom.Point;
+	import flash.utils.getTimer;
 
 	internal class StepHandler
 	{
@@ -39,6 +40,7 @@ package strategy
 		
 		internal static function isReachable(fromX:Number,fromY:Number,toX:Number,toY:Number,agentStep:Number):Boolean
 		{
+			var stetTimer:uint = getTimer();
 			//trace("fromX : "+fromX);
 			//trace("fromY : "+fromY);
 			//trace("toY : "+toY);
@@ -61,7 +63,7 @@ package strategy
 				if(!isPassable(fromX,fromY))
 				{
 					//trace(Math.random().toString()+"Get the pose ...");
-					if(moved==agentStep)
+					if(true || moved==agentStep)
 					{
 						//trace("The blockec point is : "+fromX,fromY+'  Last pint was : '+(fromX-dx),(fromY-dy));
 						startToGetAvailableRoat(fromX-dx,fromY-dy,toX,toY);
@@ -71,20 +73,23 @@ package strategy
 							trace("finalRoat[0] : "+finalRoat);
 							toX = finalRoat[1]%w ;
 							toY = (finalRoat[1]-toX)/w;
-							//trace("Next step is : "+toX,toY+" from "+fromX,fromY);
+							trace("Next step is : "+toX,toY+" from "+fromX,fromY);
 							deltaPoint = new Point(toX-fromX,toY-fromY);
 							distance = deltaPoint.length;
 							dx = (deltaPoint.x/distance)*agentStep;
 							dy = (deltaPoint.y/distance)*agentStep;
+							trace("It takes : "+(getTimer()-stetTimer));
 							return true 
 						}
 						//trace("c♠B♠♠ blockec");
 						dx = dy = 0 ;
 					}
+					trace("It takes : "+(getTimer()-stetTimer));
 					return false ;
 				}
 			}while(moved<distance);
 			//trace("The direction changed : ",dx,dy);
+			trace("It takes : "+(getTimer()-stetTimer));
 			return true ;
 		}
 		
@@ -138,7 +143,7 @@ package strategy
 							myLin = currentL+i+j*w ;
 						//	trace("controlRoat[0][0] : "+controlRoat[0][0]+' , '+myLin);
 						//	trace("controlledTiles : "+myLin);
-							if(uint((currentL+i)/w) == uint((currentL)/w) && myLin>=0 && myLin<totalPixels && controlledTiles.indexOf(myLin)==-1 && !blockedList[myLin])
+							if(currentL+i>=0 && uint((currentL+i)/w) == uint((currentL)/w) && myLin>=0 && myLin<totalPixels && controlledTiles.indexOf(myLin)==-1 && !blockedList[myLin])
 							{
 								controlledTiles.push(myLin);
 								var pose1:Point = linierToPoint(myLin);
@@ -158,7 +163,7 @@ package strategy
 								/*Debug codes
 								if(Math.abs(pose1.x-pose2.x)>2 || Math.abs(pose1.y-pose2.y)>2)
 								{
-									throw "What is wrong??"+(pose1.toString())+' ... '+(pose2.toString())+ ' from '+myLin+' ... '+currentL+' i : '+i;
+									throw "What is wrong??"+(pose1.toString())+' ... '+(pose2.toString())+' from '+myLin+' ... '+currentL+' i : '+i+' > uint('+(currentL+i)/w+') : '+uint((currentL+i)/w)+' uint('+(currentL)/w+'):'+uint((currentL)/w);
 								}*/
 							}
 						}
