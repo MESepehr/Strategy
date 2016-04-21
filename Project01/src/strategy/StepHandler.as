@@ -114,6 +114,7 @@ package strategy
 		{
 			var myLin:int ;
 			var roatIsOver:Boolean ;
+			var currentL:int ;
 			
 			while(controlRoat.length>0)
 			{
@@ -128,24 +129,23 @@ package strategy
 				}
 				//else
 				roatIsOver = true ;
+				currentL = controlRoat[0][0] ;
 				for(i = -1 ; i<2 ; i++)
 				{
 					for(j = -1 ; j<2 ; j++)
 					{
 						if(i!=0 || j!=0)
 						{
-							trace("i : "+i);
-							trace("j : "+j);
-							myLin = controlRoat[0][0]+i+j*w ;
+							myLin = currentL+i+j*w ;
 							trace("controlRoat[0][0] : "+controlRoat[0][0]+' , '+myLin);
 						//	trace("controlledTiles : "+myLin);
-							if(myLin>=0 && myLin<totalPixels && controlledTiles.indexOf(myLin)==-1 && !blockedList[myLin])
+							if(controlledTiles.indexOf(myLin)==-1 && !blockedList[myLin])
 							{
 								//controlledTiles.push(myLin);
 								controlRoat.push(controlRoat[0].concat());
 								controlRoat[controlRoat.length-1].unshift(myLin);
 								trace(">>> controlRoat[controlRoat.length-1] : "+controlRoat[controlRoat.length-1]);
-								roatIsOver = false ;
+								//roatIsOver = false ;
 							}
 						}
 					}
