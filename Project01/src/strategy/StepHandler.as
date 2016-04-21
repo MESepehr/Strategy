@@ -139,13 +139,21 @@ package strategy
 							myLin = currentL+i+j*w ;
 							trace("controlRoat[0][0] : "+controlRoat[0][0]+' , '+myLin);
 						//	trace("controlledTiles : "+myLin);
-							if(controlledTiles.indexOf(myLin)==-1 && !blockedList[myLin])
+							if(uint((currentL+i)/w) && uint((currentL)/w) && myLin>=0 && myLin<totalPixels && controlledTiles.indexOf(myLin)==-1 && !blockedList[myLin])
 							{
 								//controlledTiles.push(myLin);
+								var pose1:Point = linierToPoint(myLin);
+								var pose2:Point = linierToPoint(currentL);
+								
 								controlRoat.push(controlRoat[0].concat());
 								controlRoat[controlRoat.length-1].unshift(myLin);
 								trace(">>> controlRoat[controlRoat.length-1] : "+controlRoat[controlRoat.length-1]);
 								//roatIsOver = false ;
+								
+								if(Math.abs(pose1.x-pose2.x)>2 || Math.abs(pose1.y-pose2.y)>2)
+								{
+									throw "What is wrong??"+(pose1.toString())+' ... '+(pose2.toString())+ ' from '+myLin+' ... '+currentL;
+								}
 							}
 						}
 					}
@@ -169,8 +177,9 @@ package strategy
 		private static function linierToPoint(l:uint):Point
 		{
 			var x:uint,y:uint;
-			y = l%w ;
-			x = l-w*y;
+			x = l%w ;
+			y = (l-x)/w;
+			trace(" changed l to point : ",l+' , '+x,y);
 			return new Point(x,y);
 		}
 		
