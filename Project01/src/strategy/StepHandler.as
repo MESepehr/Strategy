@@ -139,9 +139,9 @@ package strategy
 							myLin = currentL+i+j*w ;
 							trace("controlRoat[0][0] : "+controlRoat[0][0]+' , '+myLin);
 						//	trace("controlledTiles : "+myLin);
-							if(uint((currentL+i)/w) && uint((currentL)/w) && myLin>=0 && myLin<totalPixels && controlledTiles.indexOf(myLin)==-1 && !blockedList[myLin])
+							if(uint((currentL+i)/w) == uint((currentL)/w) && myLin>=0 && myLin<totalPixels && controlledTiles.indexOf(myLin)==-1 && !blockedList[myLin])
 							{
-								//controlledTiles.push(myLin);
+								controlledTiles.push(myLin);
 								var pose1:Point = linierToPoint(myLin);
 								var pose2:Point = linierToPoint(currentL);
 								
@@ -150,10 +150,10 @@ package strategy
 								trace(">>> controlRoat[controlRoat.length-1] : "+controlRoat[controlRoat.length-1]);
 								//roatIsOver = false ;
 								
-								if(Math.abs(pose1.x-pose2.x)>2 || Math.abs(pose1.y-pose2.y)>2)
+								/*if(Math.abs(pose1.x-pose2.x)>2 || Math.abs(pose1.y-pose2.y)>2)
 								{
-									throw "What is wrong??"+(pose1.toString())+' ... '+(pose2.toString())+ ' from '+myLin+' ... '+currentL;
-								}
+									throw "What is wrong??"+(pose1.toString())+' ... '+(pose2.toString())+ ' from '+myLin+' ... '+currentL+' i : '+i;
+								}*/
 							}
 						}
 					}
