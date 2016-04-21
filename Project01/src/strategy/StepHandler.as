@@ -130,18 +130,23 @@ package strategy
 				roatIsOver = true ;
 				for(i = -1 ; i<2 ; i++)
 				{
-					for(j = -1 ; j<2 && !(i==0 && j==0) ; j++)
+					for(j = -1 ; j<2 ; j++)
 					{
-						myLin = controlRoat[0][0]+i+j*w ;
-						trace("controlRoat[0][0] : "+controlRoat[0][0]+' , '+myLin);
-					//	trace("controlledTiles : "+myLin);
-						if(myLin>=0 && myLin<totalPixels && controlledTiles.indexOf(myLin)==-1 && !blockedList[myLin])
+						if(i!=0 || j!=0)
 						{
-							//controlledTiles.push(myLin);
-							controlRoat.push(controlRoat[0].concat());
-							controlRoat[controlRoat.length-1].unshift(myLin);
-							trace(">>> controlRoat[controlRoat.length-1] : "+controlRoat[controlRoat.length-1]);
-							roatIsOver = false ;
+							trace("i : "+i);
+							trace("j : "+j);
+							myLin = controlRoat[0][0]+i+j*w ;
+							trace("controlRoat[0][0] : "+controlRoat[0][0]+' , '+myLin);
+						//	trace("controlledTiles : "+myLin);
+							if(myLin>=0 && myLin<totalPixels && controlledTiles.indexOf(myLin)==-1 && !blockedList[myLin])
+							{
+								//controlledTiles.push(myLin);
+								controlRoat.push(controlRoat[0].concat());
+								controlRoat[controlRoat.length-1].unshift(myLin);
+								trace(">>> controlRoat[controlRoat.length-1] : "+controlRoat[controlRoat.length-1]);
+								roatIsOver = false ;
+							}
 						}
 					}
 				}
