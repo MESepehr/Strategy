@@ -33,7 +33,7 @@ package strategy
 		
 		private static var finalRoat:Vector.<uint> ;
 		
-		private static var controlRoat:Vector.<uint> ;
+		private static var controlRoat:Vector.<Vector.<uint>> ;
 		
 		private static var passControllLin:uint; 
 		
@@ -50,8 +50,8 @@ package strategy
 				dx = dy = 0 ;
 				return false ;
 			}
-			dx = (deltaPoint.x/distance)*agentStep;
-			dy = (deltaPoint.y/distance)*agentStep;
+			dx = (deltaPoint.x/distance)*agentStep ;
+			dy = (deltaPoint.y/distance)*agentStep ;
 			
 			moved = 0;
 			do{
@@ -63,6 +63,7 @@ package strategy
 					trace("Get the pose ...");
 					if(moved==agentStep)
 					{
+						trace("The blockec point is : "+fromX,fromY+'  Last pint was : '+(fromX-dx),(fromY-dy));
 						startToGetAvailableRoat(fromX-dx,fromY-dy,toX,toY);
 						trace("Now I have to move forward : "+finalRoat);
 						if(finalRoat.length>0)
@@ -76,11 +77,13 @@ package strategy
 							dy = (deltaPoint.y/distance)*agentStep;
 							return true 
 						}
+						trace("c♠B♠♠ blockec");
 						dx = dy = 0 ;
 					}
 					return false ;
 				}
 			}while(moved<distance);
+			trace("The direction changed : ",dx,dy);
 			return true ;
 		}
 		
@@ -90,16 +93,16 @@ package strategy
 		private static function startToGetAvailableRoat(fromX:uint,fromY:uint,toX:uint,toY:uint):void
 		{
 			controlledTiles = new Vector.<uint>();
-			controlRoat = new Vector.<uint>();
 			finalRoat = new Vector.<uint>();
-			//Debug line
-				finalRoat.push(1);
-				return ;
-			trace("Final road resets");
+			trace("Final road resets to get it from ",fromX,fromY+' - '+toX,toY);
 			finalX = toX;
 			finalY = toY;
 			finalL = pointToLinier(toX,toY);
-			controlRoat.push(pointToLinier(fromX,fromY));
+			controlRoat = new Vector.<Vector.<uint>>();
+			controlRoat.push(new Vector.<uint>());
+			controlledTiles.push(pointToLinier(fromX,fromY));
+			controlRoat[0].push(controlledTiles[0]);
+			trace("Start to control from : "+controlRoat[0]+" >> "+fromY,fromX);
 			getAvailableRoat();
 			finalRoat.reverse();
 			trace("Road founds : "+finalRoat);
@@ -109,32 +112,40 @@ package strategy
 		/**Create a path to the destination. the values are the linier values that have to change to the x and y again*/
 		internal static function getAvailableRoat():Boolean
 		{
-			var myLin:uint ;
+			var myLin:int ;
+			var roatIsOver:Boolean ;
 			
-			for( k=0 ; k < controlRoat.length ; i++ )
+			while(controlRoat.length>0)
 			{
-				if(controlRoat[i]==finalL)
+				//trace("current roat : "+JSON.stringify(controlRoat,null,' '));
+				if(controlRoat[0][0]==finalL)
 				{
-					finalRoat.push(myLin)
+					finalRoat = controlRoat[0].concat();
+					throw "Final road is "+finalRoat+'  vs  '+finalL+'  >>>  '+controlRoat[0][0]+'    >>>>>    '+controlRoat[0];
+					controlRoat = null ;
 					return true ;
 				}
+				//else
+				roatIsOver = true ;
 				for(i = -1 ; i<2 ; i++)
 				{
-					for(j = -1;j<2;j++)
+					for(j = -1 ; j<2 ; j++)
 					{
-						myLin = controlRoat[k]+i+j*w ;
-						trace("controlledTiles : "+myLin);
+						myLin = controlRoat[0][0]+i+j*w ;
+						trace("controlRoat[0][0] : "+controlRoat[0][0]+' , '+myLin);
+					//	trace("controlledTiles : "+myLin);
 						if(myLin>=0 && myLin<totalPixels && controlledTiles.indexOf(myLin)==-1 && !blockedList[myLin])
 						{
 							controlledTiles.push(myLin);
-							if(myLin==finalL)
-							{
-								trace("Got it!!")
-								finalRoat.push(myLin)
-								return true
-							}
+							controlRoat.push(controlRoat[0].concat());
+							controlRoat[controlRoat.length-1].unshift(myLin);
+							roatIsOver = false ;
 						}
 					}
+				}
+				if(roatIsOver)
+				{
+					controlRoat.shift();
 				}
 			}
 			
