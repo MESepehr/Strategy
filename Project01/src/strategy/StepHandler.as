@@ -114,7 +114,6 @@ package strategy
 		internal static function getAvailableRoat():Boolean
 		{
 			var myLin:int ;
-			var roatIsOver:Boolean ;
 			var currentL:int ;
 			
 			while(controlRoat.length>0)
@@ -129,7 +128,6 @@ package strategy
 					return true ;
 				}
 				//else
-				roatIsOver = true ;
 				currentL = controlRoat[0][0] ;
 				for(i = -1 ; i<2 ; i++)
 				{
@@ -149,7 +147,6 @@ package strategy
 								controlRoat.push(controlRoat[0].concat());
 								controlRoat[controlRoat.length-1].unshift(myLin);
 								trace(">>> controlRoat[controlRoat.length-1] : "+controlRoat[controlRoat.length-1]);
-								//roatIsOver = false ;
 								
 								if(myLin == finalL)
 								{
@@ -158,7 +155,8 @@ package strategy
 									i=j=100;
 								}
 								
-								/*if(Math.abs(pose1.x-pose2.x)>2 || Math.abs(pose1.y-pose2.y)>2)
+								/*Debug codes
+								if(Math.abs(pose1.x-pose2.x)>2 || Math.abs(pose1.y-pose2.y)>2)
 								{
 									throw "What is wrong??"+(pose1.toString())+' ... '+(pose2.toString())+ ' from '+myLin+' ... '+currentL+' i : '+i;
 								}*/
@@ -166,10 +164,7 @@ package strategy
 						}
 					}
 				}
-				if(roatIsOver)
-				{
-					controlRoat.shift();
-				}
+				controlRoat.shift();
 			}
 			
 			
@@ -191,14 +186,6 @@ package strategy
 			return new Point(x,y);
 		}
 		
-			/*private static function getAvailableRoatLinier(FromL:uint,ToL:uint):Vector.<uint>
-			{
-				for(i = 0 ; i<9 ; i++)
-				{
-					
-				}
-				return new Vector.<uint>();
-			}*/
 		
 		
 	////////////////////////////////////Roat blocker
