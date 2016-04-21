@@ -66,13 +66,14 @@ package strategy
 						trace("The blockec point is : "+fromX,fromY+'  Last pint was : '+(fromX-dx),(fromY-dy));
 						startToGetAvailableRoat(fromX-dx,fromY-dy,toX,toY);
 						trace("Now I have to move forward : "+finalRoat);
-						if(finalRoat.length>0)
+						if(finalRoat.length>1)
 						{
-							trace("finalRoat[0] : "+finalRoat[0]);
-							toX = finalRoat[0]%w ;
-							toY = (finalRoat[0]-toX)/w;
+							trace("finalRoat[0] : "+finalRoat[1]);
+							toX = finalRoat[1]%w ;
+							toY = (finalRoat[1]-toX)/w;
 							trace("Next step is : "+toX,toY+" from "+fromX,fromY);
 							deltaPoint = new Point(toX-fromX,toY-fromY);
+							distance = deltaPoint.length;
 							dx = (deltaPoint.x/distance)*agentStep;
 							dy = (deltaPoint.y/distance)*agentStep;
 							return true 
@@ -123,7 +124,7 @@ package strategy
 				if(controlRoat[0][0]==finalL)
 				{
 					finalRoat = controlRoat[0].concat();
-					throw "Final road is "+finalRoat+'  vs  '+finalL+'  >>>  '+controlRoat[0][0]+'    >>>>>    '+controlRoat[0];
+					//throw "Final road is "+finalRoat+'  vs  '+finalL+'  >>>  '+controlRoat[0][0]+'    >>>>>    '+controlRoat[0];
 					controlRoat = null ;
 					return true ;
 				}
@@ -149,6 +150,13 @@ package strategy
 								controlRoat[controlRoat.length-1].unshift(myLin);
 								trace(">>> controlRoat[controlRoat.length-1] : "+controlRoat[controlRoat.length-1]);
 								//roatIsOver = false ;
+								
+								if(myLin == finalL)
+								{
+									controlRoat.reverse();
+									controlRoat.unshift(null);
+									i=j=100;
+								}
 								
 								/*if(Math.abs(pose1.x-pose2.x)>2 || Math.abs(pose1.y-pose2.y)>2)
 								{
