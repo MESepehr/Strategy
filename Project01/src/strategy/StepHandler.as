@@ -39,10 +39,10 @@ package strategy
 		
 		internal static function isReachable(fromX:Number,fromY:Number,toX:Number,toY:Number,agentStep:Number):Boolean
 		{
-			trace("fromX : "+fromX);
-			trace("fromY : "+fromY);
-			trace("toY : "+toY);
-			trace("toX : "+toX);
+			//trace("fromX : "+fromX);
+			//trace("fromY : "+fromY);
+			//trace("toY : "+toY);
+			//trace("toX : "+toX);
 			deltaPoint = new Point(toX-fromX,toY-fromY);
 			distance = deltaPoint.length;
 			if(distance==0)
@@ -60,31 +60,31 @@ package strategy
 				fromY += dy ;
 				if(!isPassable(fromX,fromY))
 				{
-					trace("Get the pose ...");
+					//trace(Math.random().toString()+"Get the pose ...");
 					if(moved==agentStep)
 					{
-						trace("The blockec point is : "+fromX,fromY+'  Last pint was : '+(fromX-dx),(fromY-dy));
+						//trace("The blockec point is : "+fromX,fromY+'  Last pint was : '+(fromX-dx),(fromY-dy));
 						startToGetAvailableRoat(fromX-dx,fromY-dy,toX,toY);
-						trace("Now I have to move forward : "+finalRoat);
+						//trace("Now I have to move forward : "+finalRoat);
 						if(finalRoat.length>1)
 						{
-							trace("finalRoat[0] : "+finalRoat[1]);
+							trace("finalRoat[0] : "+finalRoat);
 							toX = finalRoat[1]%w ;
 							toY = (finalRoat[1]-toX)/w;
-							trace("Next step is : "+toX,toY+" from "+fromX,fromY);
+							//trace("Next step is : "+toX,toY+" from "+fromX,fromY);
 							deltaPoint = new Point(toX-fromX,toY-fromY);
 							distance = deltaPoint.length;
 							dx = (deltaPoint.x/distance)*agentStep;
 							dy = (deltaPoint.y/distance)*agentStep;
 							return true 
 						}
-						trace("c♠B♠♠ blockec");
+						//trace("c♠B♠♠ blockec");
 						dx = dy = 0 ;
 					}
 					return false ;
 				}
 			}while(moved<distance);
-			trace("The direction changed : ",dx,dy);
+			//trace("The direction changed : ",dx,dy);
 			return true ;
 		}
 		
@@ -95,7 +95,7 @@ package strategy
 		{
 			controlledTiles = new Vector.<uint>();
 			finalRoat = new Vector.<uint>();
-			trace("Final road resets to get it from ",fromX,fromY+' - '+toX,toY);
+			//trace("Final road resets to get it from ",fromX,fromY+' - '+toX,toY);
 			finalX = toX;
 			finalY = toY;
 			finalL = pointToLinier(toX,toY);
@@ -103,10 +103,10 @@ package strategy
 			controlRoat.push(new Vector.<uint>());
 			controlledTiles.push(pointToLinier(fromX,fromY));
 			controlRoat[0].push(controlledTiles[0]);
-			trace("Start to control from : "+controlRoat[0]+" >> "+fromY,fromX);
+			//trace("Start to control from : "+controlRoat[0]+" >> "+fromY,fromX);
 			getAvailableRoat();
 			finalRoat.reverse();
-			trace("Road founds : "+finalRoat);
+			//trace("Road founds : "+finalRoat);
 		}
 		
 		
@@ -118,7 +118,7 @@ package strategy
 			
 			while(controlRoat.length>0)
 			{
-				trace("Its time to : "+controlRoat[0]+' from '+controlRoat.length);
+				//trace("Its time to : "+controlRoat[0]+' from '+controlRoat.length);
 				//trace("current roat : "+JSON.stringify(controlRoat,null,' '));
 				if(controlRoat[0][0]==finalL)
 				{
@@ -136,7 +136,7 @@ package strategy
 						if(i!=0 || j!=0)
 						{
 							myLin = currentL+i+j*w ;
-							trace("controlRoat[0][0] : "+controlRoat[0][0]+' , '+myLin);
+						//	trace("controlRoat[0][0] : "+controlRoat[0][0]+' , '+myLin);
 						//	trace("controlledTiles : "+myLin);
 							if(uint((currentL+i)/w) == uint((currentL)/w) && myLin>=0 && myLin<totalPixels && controlledTiles.indexOf(myLin)==-1 && !blockedList[myLin])
 							{
@@ -146,7 +146,7 @@ package strategy
 								
 								controlRoat.push(controlRoat[0].concat());
 								controlRoat[controlRoat.length-1].unshift(myLin);
-								trace(">>> controlRoat[controlRoat.length-1] : "+controlRoat[controlRoat.length-1]);
+							//	trace(">>> controlRoat[controlRoat.length-1] : "+controlRoat[controlRoat.length-1]);
 								
 								if(myLin == finalL)
 								{
@@ -182,7 +182,7 @@ package strategy
 			var x:uint,y:uint;
 			x = l%w ;
 			y = (l-x)/w;
-			trace(" changed l to point : ",l+' , '+x,y);
+			//trace(" changed l to point : ",l+' , '+x,y);
 			return new Point(x,y);
 		}
 		
@@ -193,7 +193,7 @@ package strategy
 		/**Returns the blucker tile if this tile is not passable*/
 		internal static function isPassable(x:uint,y:uint):Boolean
 		{
-			trace("is passable? : "+x,y);
+			//trace("is passable? : "+x,y);
 			passControllLin = y*w+x ;
 			if(passControllLin<0 || passControllLin>=totalPixels)
 			{

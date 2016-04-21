@@ -35,6 +35,9 @@ package
 			stage.addEventListener(MouseEvent.RIGHT_MOUSE_DOWN,addAgent2To);
 			stage.addEventListener(MouseEvent.MOUSE_WHEEL,addBuilding,false,100);
 			
+			myStrategy.addBuilding(2,2,1,1,0xffffff);
+			myStrategy.addBuilding(3,2,1,1,0xffffff);
+			myStrategy.addBuilding(4,2,1,1,0xffffff);
 			myStrategy.addBuilding(5,2,1,1,0xffffff);
 			myStrategy.addBuilding(5,3,1,1,0xffffff);
 			myStrategy.addBuilding(5,4,1,1,0xffffff);
@@ -42,6 +45,13 @@ package
 			myStrategy.addBuilding(5,6,1,1,0xffffff);
 			myStrategy.addBuilding(5,7,1,1,0xffffff);
 			myStrategy.addBuilding(5,8,1,1,0xffffff);
+			myStrategy.addBuilding(4,8,1,1,0xffffff);
+			myStrategy.addBuilding(3,8,1,1,0xffffff);
+			myStrategy.addBuilding(2,8,1,1,0xffffff);
+			
+			
+			myStrategy.addAgent(8,5,0xff0000,true,false,1,2,1,200,30)
+			myStrategy.addAgent(3,5,0x0000ff)
 		}
 		
 		protected function addBuilding(event:MouseEvent):void
@@ -51,7 +61,7 @@ package
 			event.stopImmediatePropagation();
 			var mx:uint = strategyBitmap.mouseX ;
 			var my:uint = strategyBitmap.mouseY ;
-			myStrategy.addBuilding(mx-1,my-1,1,1,0xffffff);
+			myStrategy.addBuilding(mx-1,my-1,2,2,0xffffff);
 		}
 		
 		protected function addAgent2To(event:MouseEvent):void
