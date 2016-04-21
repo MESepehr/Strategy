@@ -15,7 +15,7 @@ package
 		private var strategyFloor:BitmapData,
 					strategyBitmap:Bitmap;
 		
-		private const W:uint = 20,H:uint=20;
+		private const W:uint = 10,H:uint=10;
 		
 		public function ZombyLand()
 		{
@@ -34,6 +34,14 @@ package
 			stage.addEventListener(MouseEvent.MOUSE_DOWN,addAgentTo);
 			stage.addEventListener(MouseEvent.RIGHT_MOUSE_DOWN,addAgent2To);
 			stage.addEventListener(MouseEvent.MOUSE_WHEEL,addBuilding,false,100);
+			
+			myStrategy.addBuilding(5,2,1,1,0xffffff);
+			myStrategy.addBuilding(5,3,1,1,0xffffff);
+			myStrategy.addBuilding(5,4,1,1,0xffffff);
+			myStrategy.addBuilding(5,5,1,1,0xffffff);
+			myStrategy.addBuilding(5,6,1,1,0xffffff);
+			myStrategy.addBuilding(5,7,1,1,0xffffff);
+			myStrategy.addBuilding(5,8,1,1,0xffffff);
 		}
 		
 		protected function addBuilding(event:MouseEvent):void
@@ -43,7 +51,7 @@ package
 			event.stopImmediatePropagation();
 			var mx:uint = strategyBitmap.mouseX ;
 			var my:uint = strategyBitmap.mouseY ;
-			myStrategy.addBuilding(mx-1,my-1,3,3,0xffffff);
+			myStrategy.addBuilding(mx-1,my-1,1,1,0xffffff);
 		}
 		
 		protected function addAgent2To(event:MouseEvent):void
