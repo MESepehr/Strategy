@@ -19,10 +19,10 @@ package strategy
 		internal static var dx:Number,
 							dy:Number ;
 							
-		private static var finalX:uint,finalY:uint,finalL:uint;
+		private static var finalX:uint,finalY:uint,finalL:uint,firstX:uint,firstY:uint;
 		
 		/**The position of blocked tile in the path*/
-		internal static var blockexX:int,blockedY:int;
+		internal static var blockedX:int,blockedY:int;
 		
 		//Second while variables
 		/**Controll how much Agent moved*/
@@ -38,19 +38,76 @@ package strategy
 		
 		private static var passControllLin:uint; 
 		
-		internal static function isReachable(fromX:Number,fromY:Number,toX:Number,toY:Number,agentStep:Number):Boolean
+		/**This will change the dx and*/
+		internal static function guideMe(fromX:Number,fromY:Number,toX:Number,toY:Number,agentStep:Number):void
 		{
 			var stetTimer:uint = getTimer();
+			trace("Start walking from : "+fromY,fromX);
+			if(!isReachable(fromX,fromY,toX,toY,agentStep))
+			{
+				trace("*** Reset stepssssssssssssssss : "+blockedY,blockedX);
+				startToGetAvailableRoat(blockedX,blockedY,toX,toY);
+				trace("Ifound this road : "+finalRoat+'  -  who is reachable from : '+fromY,fromX);
+				var roadLength:uint = finalRoat.length ;
+				var selectedStep:uint = 1 ;
+				while(roadLength>selectedStep && isReachable(fromX,fromY,0,0,agentStep,linierToPoint(finalRoat[selectedStep])))
+				{
+					trace(finalRoat[selectedStep]+" is reachable");
+					selectedStep++;
+				}
+				selectedStep--;
+				if(roadLength<=selectedStep)
+				{
+					dx = dy = 0 ;
+					trace("No way");
+					return ;
+				}
+				//trace("The blockec point is : "+fromX,fromY+'  Last pint was : '+(fromX-dx),(fromY-dy));
+				//trace("Now I have to move forward : "+finalRoat);
+				trace("finalRoat.length : "+JSON.stringify(finalRoat)+' -> '+selectedStep+' vs '+finalRoat.length);
+				trace("finalRoat[0] : "+JSON.stringify(finalRoat));
+				toX = finalRoat[selectedStep]%w ;
+				toY = (finalRoat[selectedStep]-toX)/w;
+				trace("Next step is : "+toY,toX+" from "+fromY,fromX);
+				
+				deltaPoint = new Point(toX-firstX,toY-firstY);
+				distance = deltaPoint.length;
+				dx = (deltaPoint.x/distance)*agentStep;
+				dy = (deltaPoint.y/distance)*agentStep;
+				trace("deltaPoint : "+deltaPoint);
+				trace("distance : "+distance);
+				trace("It takes : "+(getTimer()-stetTimer));
+				trace("Dx,Dy : "+dx,dy);
+				trace("It takes : "+(getTimer()-stetTimer));
+				return ;
+			}
+			else
+			{
+				trace("It takes : "+(getTimer()-stetTimer));
+				trace("The dx and dy are leading to the direct path");
+			}
+		}
+		
+		private static function isReachable(fromX:Number,fromY:Number,toX:Number,toY:Number,agentStep:Number,toPoint:Point=null):Boolean
+		{
+			if(toPoint)
+			{
+				toX = toPoint.x;
+				toY = toPoint.y;
+			}
+			blockedX = blockedY = -1 ;
 			//trace("fromX : "+fromX);
 			//trace("fromY : "+fromY);
 			//trace("toY : "+toY);
 			//trace("toX : "+toX);
+			firstX = fromX;
+			firstY = fromY;
 			deltaPoint = new Point(toX-fromX,toY-fromY);
 			distance = deltaPoint.length;
 			if(distance==0)
 			{
 				dx = dy = 0 ;
-				return false ;
+				return true ;
 			}
 			dx = (deltaPoint.x/distance)*agentStep ;
 			dy = (deltaPoint.y/distance)*agentStep ;
@@ -62,34 +119,13 @@ package strategy
 				fromY += dy ;
 				if(!isPassable(fromX,fromY))
 				{
-					//trace(Math.random().toString()+"Get the pose ...");
-					if(true || moved==agentStep)
-					{
-						//trace("The blockec point is : "+fromX,fromY+'  Last pint was : '+(fromX-dx),(fromY-dy));
-						startToGetAvailableRoat(fromX-dx,fromY-dy,toX,toY);
-						//trace("Now I have to move forward : "+finalRoat);
-						if(finalRoat.length>1)
-						{
-							trace("finalRoat[0] : "+finalRoat);
-							toX = finalRoat[1]%w ;
-							toY = (finalRoat[1]-toX)/w;
-							trace("Next step is : "+toX,toY+" from "+fromX,fromY);
-							deltaPoint = new Point(toX-fromX,toY-fromY);
-							distance = deltaPoint.length;
-							dx = (deltaPoint.x/distance)*agentStep;
-							dy = (deltaPoint.y/distance)*agentStep;
-							trace("It takes : "+(getTimer()-stetTimer));
-							return true 
-						}
-						//trace("c♠B♠♠ blockec");
-						dx = dy = 0 ;
-					}
-					trace("It takes : "+(getTimer()-stetTimer));
+					blockedX = uint(fromX-dx);
+					blockedY = uint(fromY-dy);
 					return false ;
 				}
 			}while(moved<distance);
 			//trace("The direction changed : ",dx,dy);
-			trace("It takes : "+(getTimer()-stetTimer));
+			//trace("It takes : "+(getTimer()-stetTimer));
 			return true ;
 		}
 		
@@ -106,6 +142,7 @@ package strategy
 			finalL = pointToLinier(toX,toY);
 			controlRoat = new Vector.<Vector.<uint>>();
 			controlRoat.push(new Vector.<uint>());
+			trace("Create road from : "+fromY+' '+fromX+' > '+pointToLinier(fromX,fromY)+' to : '+toY,toX);
 			controlledTiles.push(pointToLinier(fromX,fromY));
 			controlRoat[0].push(controlledTiles[0]);
 			//trace("Start to control from : "+controlRoat[0]+" >> "+fromY,fromX);

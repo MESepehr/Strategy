@@ -70,7 +70,7 @@ package strategy
 			var myAgent:AgentBase = event.target as AgentBase ;
 			var agentStep:Number = event.agentStep ;
 			
-			StepHandler.isReachable(myAgent.x,myAgent.y,event.targetAgent.x,event.targetAgent.y,agentStep);
+			StepHandler.guideMe(myAgent.x,myAgent.y,event.targetAgent.x,event.targetAgent.y,agentStep);
 				
 			myAgent.stepForwardBasedOnGUIDE_ME_request(StepHandler.dx,StepHandler.dy);
 		}
