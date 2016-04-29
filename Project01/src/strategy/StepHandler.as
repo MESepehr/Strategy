@@ -50,6 +50,7 @@ package strategy
 				trace("Ifound this road : "+finalRoat+'  -  who is reachable from : '+fromY,fromX);
 				var roadLength:uint = finalRoat.length ;
 				var selectedStep:uint = 1 ;
+				trace("roadLength : "+roadLength+' vs selectedStep : '+selectedStep);
 				while(roadLength>selectedStep && isReachable(fromX,fromY,0,0,agentStep,linierToPoint(finalRoat[selectedStep])))
 				{
 					trace(finalRoat[selectedStep]+" is reachable");
@@ -107,10 +108,12 @@ package strategy
 			if(distance==0)
 			{
 				dx = dy = 0 ;
+				trace("** "+toY,toX+' is reachable from '+firstY,firstX);
 				return true ;
 			}
 			dx = (deltaPoint.x/distance)*agentStep ;
 			dy = (deltaPoint.y/distance)*agentStep ;
+			trace("To going "+toY,toX+" from "+fromY,fromX+" and the delta is "+deltaPoint+" > "+(toX-fromX),(toY-fromY)+" you have to go this direction : "+dy,dx);
 			
 			moved = 0;
 			do{
@@ -121,11 +124,13 @@ package strategy
 				{
 					blockedX = uint(fromX-dx);
 					blockedY = uint(fromY-dy);
+					trace("** ** "+toY,toX+' is NOT NOT NOT NOT NOT NOT reachable from '+firstY,firstX);
 					return false ;
 				}
 			}while(moved<distance);
 			//trace("The direction changed : ",dx,dy);
 			//trace("It takes : "+(getTimer()-stetTimer));
+			trace("** "+toY,toX+' is reachable from '+firstY,firstX);
 			return true ;
 		}
 		
@@ -225,7 +230,7 @@ package strategy
 			x = l%w ;
 			y = (l-x)/w;
 			//trace(" changed l to point : ",l+' , '+x,y);
-			return new Point(x,y);
+			return new Point(x+.5,y+.5);
 		}
 		
 		
@@ -237,6 +242,7 @@ package strategy
 		{
 			//trace("is passable? : "+x,y);
 			passControllLin = y*w+x ;
+			trace("Controll passable : "+y,x+" = "+passControllLin);
 			if(passControllLin<0 || passControllLin>=totalPixels)
 			{
 				return false ;
