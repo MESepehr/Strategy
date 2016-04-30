@@ -57,29 +57,41 @@ package strategy
 					selectedStep++;
 				}
 				selectedStep--;
-				if(roadLength<=selectedStep)
+				while(true)
 				{
-					dx = dy = 0 ;
-					trace("No way");
-					return ;
+					if(roadLength<=selectedStep)
+					{
+						dx = dy = 0 ;
+						trace("No way");
+						return ;
+					}
+					//trace("The blockec point is : "+fromX,fromY+'  Last pint was : '+(fromX-dx),(fromY-dy));
+					//trace("Now I have to move forward : "+finalRoat);
+					trace("finalRoat.length : "+JSON.stringify(finalRoat)+' -> '+selectedStep+' vs '+finalRoat.length);
+					trace("finalRoat[0] : "+JSON.stringify(finalRoat));
+					toX = finalRoat[selectedStep]%w ;
+					toY = (finalRoat[selectedStep]-toX)/w;
+					trace("Next step is : "+toY,toX+" from "+fromY,fromX);
+					
+					deltaPoint = new Point(toX-firstX,toY-firstY);
+					distance = deltaPoint.length;
+					if(distance!=0)
+					{
+						dx = (deltaPoint.x/distance)*agentStep;
+						dy = (deltaPoint.y/distance)*agentStep;
+					}
+					else
+					{
+						throw "** finalRoat : "+finalRoat+' step '+linierToPoint(finalRoat[selectedStep])+" Is not diffrent from "+firstY+','+firstX;
+						selectedStep++;
+						continue;
+					}
+					trace("deltaPoint : "+deltaPoint);
+					trace("distance : "+distance);
+					trace("It takes : "+(getTimer()-stetTimer));
+					trace("Dx,Dy : "+dx,dy);
+					break;
 				}
-				//trace("The blockec point is : "+fromX,fromY+'  Last pint was : '+(fromX-dx),(fromY-dy));
-				//trace("Now I have to move forward : "+finalRoat);
-				trace("finalRoat.length : "+JSON.stringify(finalRoat)+' -> '+selectedStep+' vs '+finalRoat.length);
-				trace("finalRoat[0] : "+JSON.stringify(finalRoat));
-				toX = finalRoat[selectedStep]%w ;
-				toY = (finalRoat[selectedStep]-toX)/w;
-				trace("Next step is : "+toY,toX+" from "+fromY,fromX);
-				
-				deltaPoint = new Point(toX-firstX,toY-firstY);
-				distance = deltaPoint.length;
-				dx = (deltaPoint.x/distance)*agentStep;
-				dy = (deltaPoint.y/distance)*agentStep;
-				trace("deltaPoint : "+deltaPoint);
-				trace("distance : "+distance);
-				trace("It takes : "+(getTimer()-stetTimer));
-				trace("Dx,Dy : "+dx,dy);
-				trace("It takes : "+(getTimer()-stetTimer));
 				return ;
 			}
 			else
@@ -89,12 +101,17 @@ package strategy
 			}
 		}
 		
-		private static function isReachable(fromX:Number,fromY:Number,toX:Number,toY:Number,agentStep:Number,toPoint:Point=null):Boolean
+		private static function isReachable(fromX:Number,fromY:Number,toX:Number,toY:Number,agentStep:Number,toPoint:Point=null,fromPoint:Point=null):Boolean
 		{
 			if(toPoint)
 			{
 				toX = toPoint.x;
 				toY = toPoint.y;
+			}
+			if(fromPoint)
+			{
+				fromX = fromPoint.x;
+				fromY = fromPoint.y; 
 			}
 			blockedX = blockedY = -1 ;
 			//trace("fromX : "+fromX);
@@ -167,7 +184,7 @@ package strategy
 			{
 				//trace("Its time to : "+controlRoat[0]+' from '+controlRoat.length);
 				//trace("current roat : "+JSON.stringify(controlRoat,null,' '));
-				if(controlRoat[0][0]==finalL)
+				if(controlRoat[0][0]==finalL || isReachable(0,0,0,0,1,linierToPoint(finalL),linierToPoint(controlRoat[0][0])))
 				{
 					finalRoat = controlRoat[0].concat();
 					//throw "Final road is "+finalRoat+'  vs  '+finalL+'  >>>  '+controlRoat[0][0]+'    >>>>>    '+controlRoat[0];
@@ -201,6 +218,13 @@ package strategy
 									controlRoat.unshift(null);
 									i=j=100;
 								}
+								/*if(isReachable(0,0,0,0,1,linierToPoint(finalL),linierToPoint(myLin)))
+								{
+									controlRoat.reverse();
+									controlRoat.unshift(null);
+									i=j=100;
+								}*/
+								
 								
 								/*Debug codes
 								if(Math.abs(pose1.x-pose2.x)>2 || Math.abs(pose1.y-pose2.y)>2)
