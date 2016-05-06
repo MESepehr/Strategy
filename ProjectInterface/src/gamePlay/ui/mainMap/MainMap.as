@@ -11,6 +11,8 @@ package gamePlay.ui.mainMap
 	
 	import gamePlay.ui.players.MainPlayer;
 	
+	import strategy.AgentBase;
+	import strategy.AgentCall;
 	import strategy.StrategyFloor;
 	
 	public class MainMap extends MovieClip
@@ -31,10 +33,14 @@ package gamePlay.ui.mainMap
 		
 		private var players:Vector.<MainPlayer> ;
 		
+		private var clickCatcher:MovieClip,
+					clickCathcerBackMC:MovieClip;
+		
 		public function MainMap()
 		{
 			super();
 			Multitouch.inputMode = MultitouchInputMode.GESTURE;
+			
 			
 			mapMC = Obj.get("map_mc",this);
 			players = new Vector.<MainPlayer>();
@@ -42,14 +48,16 @@ package gamePlay.ui.mainMap
 			houses = Obj.getAllChilds("knight_mc",this);
 			stage.addEventListener(MouseEvent.MOUSE_DOWN,startDraging);
 			mapElements = Obj.get("elem_mc",this);
-			ZSorter.autoSort(mapElements);
+			clickCatcher = Obj.get("click_catcher_mc",this);
+			clickCatcher.visible = false ;
+			clickCathcerBackMC = Obj.get("back_mc",clickCatcher);
 			this.addEventListener(TransformGestureEvent.GESTURE_ZOOM,zoomInZoomOut);
 			
 			myStrategy = new StrategyFloor(floorX,floorX);
-			//myStrategy.addBuilding(30,10,10,10,0xffffff);
-			//myStrategy.addBuilding(30,20,10,10,0xffffff);
-			//myStrategy.addBuilding(40,40,10,10,0xffffff);
-			//myStrategy.addBuilding(20,40,10,10,0xffffff);
+			myStrategy.addBuilding(30,10,10,10,0xffffff);
+			myStrategy.addBuilding(30,20,10,10,0xffffff);
+			myStrategy.addBuilding(40,40,10,10,0xffffff);
+			myStrategy.addBuilding(20,40,10,10,0xffffff);
 			
 			
 			stage.addChild(myStrategy.debugBitmap());
@@ -72,21 +80,50 @@ package gamePlay.ui.mainMap
 			Obj.remove(downMC);
 			
 			MainPlayer.setUp(leftPoint,rightPoint,upPoint,downPoint,floorX,floorX);
-			myStrategy.addAgent(0,0,0xff0000,true,true,0.5,1,1,100,20)
+			var player:AgentBase = myStrategy.addAgent(0,0,0xff0000,true,true,0.2,0.3,1,Infinity,Infinity)
 				//instead of
-			//var aSolder:MainPlayer = new MainPlayer(myStrategy.addAgent(0,0,0xff0000,true,true,0.5,1,1,100,20));
-			//mapElements.addChild(aSolder);
+			var aSolder:MainPlayer = new MainPlayer(player);
+			mapElements.addChild(aSolder);
 			
 			this.addEventListener(Event.ENTER_FRAME,anim);
 			
-			//players.push(aSolder);
+			players.push(aSolder);
 			
 			//add fake enemy
 			//myStrategy.addAgent(60,60,0x00ff00,true,false,0,1,0,100,20);
-			myStrategy.addAgent(8,5,0xffff00,true,false,1,2,1,200,30)
+			//myStrategy.addAgent(60,60,0xffff00,true,false,1,2,1,200,30)
 			
 			
 			setRotation(perespectiveRotation);
+			ZSorter.autoSort(mapElements);
+			
+			this.addEventListener(MouseEvent.CLICK,addEnemy);
+			this.addEventListener(AgentCall.FORGET_MY_BODY,removeHimFromStage);
+		}
+		
+		protected function removeHimFromStage(event:Event):void
+		{
+			var playerIndex:int = players.indexOf(event.target as MainPlayer);
+			if(playerIndex!=-1)
+			{
+				Obj.remove(players.splice(playerIndex,1)[0]);
+			}
+		}
+		
+		protected function addEnemy(event:MouseEvent):void
+		{
+			if(clickCathcerBackMC.hitTestPoint(stage.mouseX,stage.mouseY,true))
+			{
+				var clickCathcerX:Number = Math.min(Math.max(0,Math.min(floorX,clickCathcerBackMC.mouseX/clickCathcerBackMC.width*floorX))) ;
+				var clickCathcerY:Number = Math.min(Math.max(0,Math.min(floorX,clickCathcerBackMC.mouseY/clickCathcerBackMC.height*floorX))) ;
+				trace("clickCathcerX : "+clickCathcerX);
+				trace("clickCathcerY : "+clickCathcerY);
+				var player:AgentBase = myStrategy.addAgent(clickCathcerX,clickCathcerY,0x00ff00,true,true,0.1,0.1,1,50,10)
+				var aSolder:MainPlayer = new MainPlayer(player);
+				mapElements.addChild(aSolder);
+				players.push(aSolder);
+				setRotation(perespectiveRotation);
+			}
 		}
 		
 		protected function anim(event:Event):void
