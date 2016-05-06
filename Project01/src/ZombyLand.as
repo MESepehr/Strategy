@@ -49,6 +49,8 @@ package
 			myStrategy.addBuilding(3,8,1,1,0xffffff);
 			myStrategy.addBuilding(2,8,1,1,0xffffff);
 			
+			this.addChild(myStrategy.debugBitmap());
+			
 			
 			myStrategy.addAgent(8,5,0xff0000,true,false,1,2,1,200,30)
 			myStrategy.addAgent(3,5,0x0000ff)
@@ -85,7 +87,7 @@ package
 		protected function anim(event:Event):void
 		{
 			myStrategy.step();
-			strategyFloor.lock();
+			/*strategyFloor.lock();
 			strategyFloor.fillRect(strategyFloor.rect,0x000000);
 			var l:uint = myStrategy.agents.length;
 			for(var i = 0 ; i<l ; i++)
@@ -93,7 +95,7 @@ package
 			//	trace("Draw the unit : "+Math.floor(myStrategy.agents[i].x),Math.floor(myStrategy.agents[i].y));
 				strategyFloor.setPixel32(Math.floor(myStrategy.agents[i].x),Math.floor(myStrategy.agents[i].y),myStrategy.agents[i].teamColor)
 			}
-			strategyFloor.unlock();
+			strategyFloor.unlock();*/
 		}
 	}
 }

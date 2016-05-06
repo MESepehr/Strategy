@@ -25,7 +25,7 @@ package gamePlay.ui.mainMap
 		
 		private var myStrategy:StrategyFloor ;
 		
-		private var startPoint:Point,endPoint:Point;
+		private var leftPoint:Point,rightPoint:Point,upPoint:Point,downPoint:Point;
 		
 		private var floorX:uint = 60;
 		
@@ -53,16 +53,23 @@ package gamePlay.ui.mainMap
 			
 			
 			
-			var startMC:MovieClip = Obj.get('s_mc',mapElements);
-			var endMC:MovieClip = Obj.get('e_mc',mapElements);
 			
-			startPoint = new Point(startMC.x,startMC.y);
-			endPoint = new Point(endMC.x,endMC.y);
+			var leftMC:MovieClip = Obj.get('l_mc',mapElements);
+			var rightMC:MovieClip = Obj.get('r_mc',mapElements);
+			var upMC:MovieClip = Obj.get('u_mc',mapElements);
+			var downMC:MovieClip = Obj.get('d_mc',mapElements);
 			
-			Obj.remove(startMC);
-			Obj.remove(endMC);
+			leftPoint = new Point(leftMC.x,leftMC.y);
+			rightPoint = new Point(rightMC.x,rightMC.y);
+			upPoint = new Point(upMC.x,upMC.y);
+			downPoint = new Point(downMC.x,downMC.y);
 			
-			MainPlayer.setUp(startPoint,endPoint,floorX,floorX);
+			Obj.remove(leftMC);
+			Obj.remove(rightMC);
+			Obj.remove(upMC);
+			Obj.remove(downMC);
+			
+			MainPlayer.setUp(leftPoint,rightPoint,upPoint,downPoint,floorX,floorX);
 			
 			var aSolder:MainPlayer = new MainPlayer(myStrategy.addAgent(0,0,0xff0000,true,true,0.5,1,1,100,20));
 			mapElements.addChild(aSolder);
@@ -72,7 +79,7 @@ package gamePlay.ui.mainMap
 			players.push(aSolder);
 			
 			//add fake enemy
-			//myStrategy.addAgent(60,0,0x00ff00,true,true,0.5,1,1,100,20);
+			myStrategy.addAgent(60,0,0x00ff00,true,true,0.5,1,1,100,20);
 			
 			
 			setRotation(perespectiveRotation);

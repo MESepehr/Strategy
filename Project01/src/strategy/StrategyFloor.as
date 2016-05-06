@@ -1,5 +1,8 @@
 package strategy
 {
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
+	import flash.display.DisplayObject;
 	import flash.events.Event;
 	import flash.geom.Point;
 
@@ -10,6 +13,8 @@ package strategy
 		public var agents:Vector.<AgentBase> ;
 		/**Only the building agents*/
 		public var 	buildings:Vector.<AgentBase> ;
+		
+		private var _debugBitmap:Bitmap ;
 		
 		public function StrategyFloor(W:uint,H:uint)
 		{
@@ -93,6 +98,19 @@ package strategy
 			{
 				agents[i].step();
 			}
+			
+			if(_debugBitmap)
+			{
+				_debugBitmap.bitmapData.lock();
+				_debugBitmap.bitmapData.fillRect(_debugBitmap.bitmapData.rect,0x000000);
+				var l:uint = agents.length;
+				for(var i = 0 ; i<l ; i++)
+				{
+					//	trace("Draw the unit : "+Math.floor(myStrategy.agents[i].x),Math.floor(myStrategy.agents[i].y));
+					_debugBitmap.bitmapData.setPixel32(Math.floor(agents[i].x),Math.floor(agents[i].y),agents[i].teamColor)
+				}
+				_debugBitmap.bitmapData.unlock();
+			}
 		}
 		
 		/**This agent is dead*/
@@ -135,5 +153,11 @@ package strategy
 			myAgent.getOtherAgents(agentListForHim);
 		}
 		
+		public function debugBitmap():Bitmap
+		{
+			// TODO Auto Generated method stub
+			trace("StepHandler.w : "+StepHandler.w);
+			return _debugBitmap = new Bitmap(new BitmapData(StepHandler.w,StepHandler.h,false,0x000000));
+		}
 	}
 }

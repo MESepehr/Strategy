@@ -14,8 +14,10 @@ package gamePlay.ui.players
 		
 		private var agent:AgentBase ;
 		
-		private static var startPoint:Point,
-							endPoint:Point ;
+		private static var lPoint:Point,
+							uPoint:Point,
+							dPoint:Point,
+							rPoint:Point ;
 							
 		private static var floorW:Number,floorH:Number ;
 		
@@ -24,20 +26,22 @@ package gamePlay.ui.players
 		private static const cos45:Number = Math.cos(45*Math.PI/180)
 							,sin45:Number = Math.sin(45*Math.PI/180);
 		
-		public static function setUp(StartPoint:Point,EndPoint:Point,floorPointsX:uint,floorPointsY:uint)
+		public static function setUp(LeftPoint:Point,RightPoint:Point,UpPoint:Point,DownPoint:Point,floorPointsX:uint,floorPointsY:uint)
 		{
 			matrixW = floorPointsX ;
 			matrixH = floorPointsY ;
-			startPoint = StartPoint;
-			endPoint = EndPoint ;
-			floorW = endPoint.x-startPoint.x;
-			floorH = endPoint.y-startPoint.y;
+			lPoint = LeftPoint;
+			rPoint = RightPoint ;
+			uPoint = UpPoint ;
+			dPoint = DownPoint ;
+			floorW = RightPoint.x-lPoint.x;
+			floorH = UpPoint.y-DownPoint.y ;
 		}
 		
 		public function MainPlayer(myAgent:AgentBase)
 		{
 			super();
-			if(endPoint==null)
+			if(lPoint==null)
 			{
 				throw "You have to setUp the MainPlayer class first";
 			}
@@ -54,10 +58,20 @@ package gamePlay.ui.players
 		private function setMyXY(newX:Number,newY:Number):void
 		{
 			var rad:Number = Math.atan2(newX-lastX,newY-lastY);
-			var X:Number = (newX/matrixW)*floorW;
-			var Y:Number = (newY/matrixH)*floorH;
-			this.x = X;//*cos45-sin45*Y;
-			this.y = Y+(floorW/2);//*cos45-sin45*X;
+			var xPrecent:Number = newX/matrixW;
+			var yPrecent:Number = newY/matrixH;
+			var X:Number = xPrecent*floorW;
+			var Y:Number = yPrecent*floorH;
+			trace("X : "+X);
+			trace("Y : "+Y);
+			trace("newX : "+newX);
+			trace("matrixW : "+matrixW);
+			trace("lPoint.y : "+lPoint.y);
+			trace("xPrecent : "+xPrecent);
+			trace("Y/2-xPrecent*floorH : "+(Y/2-xPrecent*floorH));
+			//this.x = X/2+Y/2;//*cos45-sin45*Y;
+			this.y = lPoint.y+Y/2-xPrecent*floorH;//Y/2-X/2+startPoint.y;//*cos45-sin45*X;
+			//trace(" floorH/2  : "+(floorH/2));
 		}
 		
 		protected function unLoad(event:Event):void
