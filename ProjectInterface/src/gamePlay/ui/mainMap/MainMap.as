@@ -46,11 +46,13 @@ package gamePlay.ui.mainMap
 			this.addEventListener(TransformGestureEvent.GESTURE_ZOOM,zoomInZoomOut);
 			
 			myStrategy = new StrategyFloor(floorX,floorX);
-			myStrategy.addBuilding(30,10,10,10,0);
-			myStrategy.addBuilding(30,20,10,10,0);
-			myStrategy.addBuilding(40,40,10,10,0);
-			myStrategy.addBuilding(20,40,10,10,0);
+			//myStrategy.addBuilding(30,10,10,10,0xffffff);
+			//myStrategy.addBuilding(30,20,10,10,0xffffff);
+			//myStrategy.addBuilding(40,40,10,10,0xffffff);
+			//myStrategy.addBuilding(20,40,10,10,0xffffff);
 			
+			
+			stage.addChild(myStrategy.debugBitmap());
 			
 			
 			
@@ -79,7 +81,7 @@ package gamePlay.ui.mainMap
 			players.push(aSolder);
 			
 			//add fake enemy
-			myStrategy.addAgent(60,0,0x00ff00,true,true,0.5,1,1,100,20);
+			myStrategy.addAgent(60,60,0x00ff00,true,false,0,1,0,100,20);
 			
 			
 			setRotation(perespectiveRotation);
