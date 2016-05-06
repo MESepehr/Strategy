@@ -12,8 +12,10 @@ package
 	{
 		private var myStrategy:StrategyFloor ;
 		
-		private var strategyFloor:BitmapData,
-					strategyBitmap:Bitmap;
+		//private var strategyFloor:BitmapData,
+		//			strategyBitmap:Bitmap;
+		
+		var debugBitmap:Bitmap ; 
 		
 		private const W:uint = 10,H:uint=10;
 		
@@ -22,14 +24,14 @@ package
 			super();
 			
 			myStrategy = new StrategyFloor(W,H);
-			strategyFloor = new BitmapData(W,H,false,0x000000);
-			strategyBitmap = new Bitmap(strategyFloor);
+			//strategyFloor = new BitmapData(W,H,false,0x000000);
+			//strategyBitmap = new Bitmap(strategyFloor);
 			
-			strategyBitmap.width = stage.stageWidth;
-			strategyBitmap.height = stage.stageHeight;
+			//strategyBitmap.width = stage.stageWidth;
+			//strategyBitmap.height = stage.stageHeight;
 			
 			
-			this.addChild(strategyBitmap);
+			//this.addChild(strategyBitmap);
 			this.addEventListener(Event.ENTER_FRAME,anim);
 			stage.addEventListener(MouseEvent.MOUSE_DOWN,addAgentTo);
 			stage.addEventListener(MouseEvent.RIGHT_MOUSE_DOWN,addAgent2To);
@@ -49,7 +51,10 @@ package
 			myStrategy.addBuilding(3,8,1,1,0xffffff);
 			myStrategy.addBuilding(2,8,1,1,0xffffff);
 			
-			this.addChild(myStrategy.debugBitmap());
+			debugBitmap = myStrategy.debugBitmap() ;
+			this.addChild(debugBitmap);
+			debugBitmap.width = stage.stageWidth;
+			debugBitmap.height = stage.stageHeight;
 			
 			
 			myStrategy.addAgent(8,5,0xff0000,true,false,1,2,1,200,30)
@@ -61,8 +66,8 @@ package
 			// TODO Auto-generated method stub
 			trace("Create building");
 			event.stopImmediatePropagation();
-			var mx:uint = strategyBitmap.mouseX ;
-			var my:uint = strategyBitmap.mouseY ;
+			var mx:uint = debugBitmap.mouseX ;
+			var my:uint = debugBitmap.mouseY ;
 			myStrategy.addBuilding(mx-1,my-1,2,2,0xffffff);
 		}
 		
@@ -71,15 +76,15 @@ package
 			// TODO Auto-generated method stub
 			event.preventDefault();
 			event.stopImmediatePropagation();
-			var X:Number = (strategyBitmap.mouseX);
-			var Y:Number = (strategyBitmap.mouseY);
+			var X:Number = (debugBitmap.mouseX);
+			var Y:Number = (debugBitmap.mouseY);
 			myStrategy.addAgent(X,Y,0x0000ff)
 		}
 		
 		protected function addAgentTo(event:MouseEvent):void
 		{
-			var X:Number = (strategyBitmap.mouseX);
-			var Y:Number = (strategyBitmap.mouseY);
+			var X:Number = (debugBitmap.mouseX);
+			var Y:Number = (debugBitmap.mouseY);
 			myStrategy.addAgent(X,Y,0xff0000,true,false,1,2,1,200,30)
 		}
 		

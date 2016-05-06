@@ -93,8 +93,9 @@ package strategy
 		
 		public function step():void
 		{
+			var i:int ;
 			//var l:uint = agents.length; 
-			for(var i = 0 ; i<agents.length ; i++)
+			for(i = 0 ; i<agents.length ; i++)
 			{
 				agents[i].step();
 			}
@@ -104,7 +105,7 @@ package strategy
 				_debugBitmap.bitmapData.lock();
 				_debugBitmap.bitmapData.fillRect(_debugBitmap.bitmapData.rect,0x000000);
 				var l:uint = agents.length;
-				for(var i = 0 ; i<l ; i++)
+				for(i = 0 ; i<l ; i++)
 				{
 					//	trace("Draw the unit : "+Math.floor(myStrategy.agents[i].x),Math.floor(myStrategy.agents[i].y));
 					_debugBitmap.bitmapData.setPixel32(Math.floor(agents[i].x),Math.floor(agents[i].y),agents[i].teamColor)
