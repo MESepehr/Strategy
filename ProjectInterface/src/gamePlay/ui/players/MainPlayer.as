@@ -152,9 +152,10 @@ package gamePlay.ui.players
 			var deltaX:Number = this.x-lastX;
 			var deltaY:Number = this.y-lastY;
 			
-			//lastRot = Math.floor((Math.atan2(deltaX,deltaY))/3.14*-8)+1;
-			//lastRot = lastRot%8;
-			//trace("lastRot : "+lastRot);
+			if(deltaX!=0 || deltaY!=0)
+			{
+				lastRot = Math.round(Math.abs((Math.atan2(deltaX,deltaY)+Math.PI*-2)/Math.PI*4)%8)+1 ;
+			}
 			//trace("Rad is : "+((Math.atan2(deltaX,deltaY)/Math.PI*180)));
 			
 			

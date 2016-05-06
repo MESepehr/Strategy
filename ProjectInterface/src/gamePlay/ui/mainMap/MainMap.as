@@ -6,6 +6,7 @@ package gamePlay.ui.mainMap
 	import flash.events.MouseEvent;
 	import flash.events.TransformGestureEvent;
 	import flash.geom.Point;
+	import flash.system.System;
 	import flash.ui.Multitouch;
 	import flash.ui.MultitouchInputMode;
 	
@@ -80,7 +81,7 @@ package gamePlay.ui.mainMap
 			Obj.remove(downMC);
 			
 			MainPlayer.setUp(leftPoint,rightPoint,upPoint,downPoint,floorX,floorX);
-			var player:AgentBase = myStrategy.addAgent(0,0,0xff0000,true,true,0.2,0.3,1,Infinity,Infinity)
+			var player:AgentBase = myStrategy.addAgent(0,0,0xff0000,true,true,0.2,0.3,5,Infinity,Infinity)
 				//instead of
 			var aSolder:MainPlayer = new MainPlayer(player);
 			mapElements.addChild(aSolder);
@@ -107,6 +108,7 @@ package gamePlay.ui.mainMap
 			if(playerIndex!=-1)
 			{
 				Obj.remove(players.splice(playerIndex,1)[0]);
+				System.gc();
 			}
 		}
 		
@@ -118,7 +120,7 @@ package gamePlay.ui.mainMap
 				var clickCathcerY:Number = Math.min(Math.max(0,Math.min(floorX,clickCathcerBackMC.mouseY/clickCathcerBackMC.height*floorX))) ;
 				trace("clickCathcerX : "+clickCathcerX);
 				trace("clickCathcerY : "+clickCathcerY);
-				var player:AgentBase = myStrategy.addAgent(clickCathcerX,clickCathcerY,0x00ff00,true,true,0.1,0.1,1,50,10)
+				var player:AgentBase = myStrategy.addAgent(clickCathcerX,clickCathcerY,0x00ff00,true,true,0.1,0.1,5,50,10)
 				var aSolder:MainPlayer = new MainPlayer(player);
 				mapElements.addChild(aSolder);
 				players.push(aSolder);
