@@ -72,16 +72,18 @@ package gamePlay.ui.mainMap
 			Obj.remove(downMC);
 			
 			MainPlayer.setUp(leftPoint,rightPoint,upPoint,downPoint,floorX,floorX);
-			
-			var aSolder:MainPlayer = new MainPlayer(myStrategy.addAgent(0,0,0xff0000,true,true,0.5,1,1,100,20));
-			mapElements.addChild(aSolder);
+			myStrategy.addAgent(0,0,0xff0000,true,true,0.5,1,1,100,20)
+				//instead of
+			//var aSolder:MainPlayer = new MainPlayer(myStrategy.addAgent(0,0,0xff0000,true,true,0.5,1,1,100,20));
+			//mapElements.addChild(aSolder);
 			
 			this.addEventListener(Event.ENTER_FRAME,anim);
 			
-			players.push(aSolder);
+			//players.push(aSolder);
 			
 			//add fake enemy
-			myStrategy.addAgent(60,60,0x00ff00,true,false,0,1,0,100,20);
+			//myStrategy.addAgent(60,60,0x00ff00,true,false,0,1,0,100,20);
+			myStrategy.addAgent(8,5,0xffff00,true,false,1,2,1,200,30)
 			
 			
 			setRotation(perespectiveRotation);
