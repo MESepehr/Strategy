@@ -26,7 +26,7 @@ package strategy
 		
 		private var otherAgents:Vector.<AgentBase> ;
 		
-		private var targetAgent:AgentBase ;
+		public var targetAgent:AgentBase ;
 		
 		/**This is the distance between each steps that user takes*/
 		private var runSpeed:Number;

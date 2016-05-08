@@ -154,6 +154,19 @@ package gamePlay.ui.players
 			
 			if(deltaX!=0 || deltaY!=0)
 			{
+				//lastRot = Math.round(Math.abs((Math.atan2(deltaX,deltaY)+Math.PI*-2)/Math.PI*4)%8)+1 ;
+			}
+			else
+			{
+				if(agent.targetAgent)
+				{
+					deltaX = agent.targetAgent.x-agent.x;
+					deltaY = agent.targetAgent.y-agent.y;
+				}
+			}
+			
+			if(deltaX!=0 || deltaY!=0)
+			{
 				lastRot = Math.round(Math.abs((Math.atan2(deltaX,deltaY)+Math.PI*-2)/Math.PI*4)%8)+1 ;
 			}
 			//trace("Rad is : "+((Math.atan2(deltaX,deltaY)/Math.PI*180)));
