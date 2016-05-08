@@ -47,12 +47,10 @@ package gamePlay.ui.mainMap
 			players = new Vector.<MainPlayer>();
 			
 			houses = Obj.getAllChilds("knight_mc",this);
-			stage.addEventListener(MouseEvent.MOUSE_DOWN,startDraging);
 			mapElements = Obj.get("elem_mc",this);
 			clickCatcher = Obj.get("click_catcher_mc",this);
 			clickCatcher.visible = false ;
 			clickCathcerBackMC = Obj.get("back_mc",clickCatcher);
-			this.addEventListener(TransformGestureEvent.GESTURE_ZOOM,zoomInZoomOut);
 			
 			myStrategy = new StrategyFloor(floorX,floorX);
 			myStrategy.addBuilding(30,10,10,10,0xffffff);
@@ -100,6 +98,9 @@ package gamePlay.ui.mainMap
 			
 			this.addEventListener(MouseEvent.CLICK,addEnemy);
 			this.addEventListener(AgentCall.FORGET_MY_BODY,removeHimFromStage);
+			this.addEventListener(TransformGestureEvent.GESTURE_ZOOM,zoomInZoomOut);
+			stage.addEventListener(MouseEvent.MOUSE_DOWN,startDraging);
+			
 		}
 		
 		protected function removeHimFromStage(event:Event):void
@@ -120,11 +121,14 @@ package gamePlay.ui.mainMap
 				var clickCathcerY:Number = Math.min(Math.max(0,Math.min(floorX,clickCathcerBackMC.mouseY/clickCathcerBackMC.height*floorX))) ;
 				trace("clickCathcerX : "+clickCathcerX);
 				trace("clickCathcerY : "+clickCathcerY);
-				var player:AgentBase = myStrategy.addAgent(clickCathcerX,clickCathcerY,0x00ff00,true,true,0.1,0.1,5,50,10)
-				var aSolder:MainPlayer = new MainPlayer(player);
-				mapElements.addChild(aSolder);
-				players.push(aSolder);
-				setRotation(perespectiveRotation);
+				var player:AgentBase = myStrategy.addAgent(clickCathcerX,clickCathcerY,0x00ff00,true,true,0.1,0.1,5,50,10);
+				if(player)
+				{
+					var aSolder:MainPlayer = new MainPlayer(player);
+					mapElements.addChild(aSolder);
+					players.push(aSolder);
+					setRotation(perespectiveRotation);
+				}
 			}
 		}
 		
@@ -152,6 +156,7 @@ package gamePlay.ui.mainMap
 			this.scaleX *= event.scaleX*event.scaleY ;
 			this.scaleZ = this.scaleY = this.scaleX = Math.min(1,Math.max(this.scaleX,5));
 			//setRotation(perespectiveRotation*this.scaleX);
+			trace("Hi");
 		}		
 		
 		protected function startDraging(event:MouseEvent):void

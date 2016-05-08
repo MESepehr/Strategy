@@ -34,6 +34,10 @@ package strategy
 		public function addAgent(x0:Number,y0:Number,teamColor:uint,isPassable:Boolean=true,canMove:Boolean=true,myMoveSteps:Number=0.5,myRunSteps:Number=1,myHitRange:Number=1,myLife:Number=100,myWeaponDamage:Number=20):AgentBase
 		{
 			//I need agent type to
+			if(!StepHandler.isPassable(x0,y0))
+			{
+				return null ;
+			}
 			var newAgent:AgentBase = new AgentBase(x0,y0,teamColor,isPassable,canMove,myMoveSteps,myRunSteps,myHitRange,myLife,myWeaponDamage);
 			addAllListenets(newAgent);
 			agents.push(newAgent);
