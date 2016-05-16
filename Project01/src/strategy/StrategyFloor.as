@@ -1,5 +1,8 @@
 package strategy
 {
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
+	import flash.display.DisplayObject;
 	import flash.events.Event;
 	import flash.geom.Point;
 
@@ -10,6 +13,8 @@ package strategy
 		public var agents:Vector.<AgentBase> ;
 		/**Only the building agents*/
 		public var 	buildings:Vector.<AgentBase> ;
+		
+		private var _debugBitmap:Bitmap ;
 		
 		public function StrategyFloor(W:uint,H:uint)
 		{
@@ -26,9 +31,13 @@ package strategy
 		/**x0: x position to start agent<br>
 		 * y0: y position to start agent<br>
 		 * teamColor: uses to define teams and their own color. the 0 is no team*/
-		public function addAgent(x0:Number,y0:Number,teamColor:uint,isPassable:Boolean=true,canMove:Boolean=true,myMoveSteps:Number=0.5,myRunSteps:Number=1,myHitRange:Number=1,myLife:Number=100,myWeaponDamage:Number=20):void
+		public function addAgent(x0:Number,y0:Number,teamColor:uint,isPassable:Boolean=true,canMove:Boolean=true,myMoveSteps:Number=0.5,myRunSteps:Number=1,myHitRange:Number=1,myLife:Number=100,myWeaponDamage:Number=20):AgentBase
 		{
 			//I need agent type to
+			if(!StepHandler.isPassable(x0,y0))
+			{
+				return null ;
+			}
 			var newAgent:AgentBase = new AgentBase(x0,y0,teamColor,isPassable,canMove,myMoveSteps,myRunSteps,myHitRange,myLife,myWeaponDamage);
 			addAllListenets(newAgent);
 			agents.push(newAgent);
@@ -39,6 +48,7 @@ package strategy
 				//No need to sort, I add an other list to manage blocked buildings. may be I remove the bulding list at all
 				//buildings.sort(sortBuildingByY)
 			}
+			return newAgent ;
 		}
 		
 		
@@ -87,10 +97,24 @@ package strategy
 		
 		public function step():void
 		{
+			var i:int ;
 			//var l:uint = agents.length; 
-			for(var i = 0 ; i<agents.length ; i++)
+			for(i = 0 ; i<agents.length ; i++)
 			{
 				agents[i].step();
+			}
+			
+			if(_debugBitmap)
+			{
+				_debugBitmap.bitmapData.lock();
+				_debugBitmap.bitmapData.fillRect(_debugBitmap.bitmapData.rect,0x000000);
+				var l:uint = agents.length;
+				for(i = 0 ; i<l ; i++)
+				{
+					//	trace("Draw the unit : "+Math.floor(myStrategy.agents[i].x),Math.floor(myStrategy.agents[i].y));
+					_debugBitmap.bitmapData.setPixel32(Math.floor(agents[i].x),Math.floor(agents[i].y),agents[i].teamColor)
+				}
+				_debugBitmap.bitmapData.unlock();
 			}
 		}
 		
@@ -134,5 +158,11 @@ package strategy
 			myAgent.getOtherAgents(agentListForHim);
 		}
 		
+		public function debugBitmap():Bitmap
+		{
+			// TODO Auto Generated method stub
+			trace("StepHandler.w : "+StepHandler.w);
+			return _debugBitmap = new Bitmap(new BitmapData(StepHandler.w,StepHandler.h,false,0x000000));
+		}
 	}
 }

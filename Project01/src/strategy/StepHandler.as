@@ -42,18 +42,18 @@ package strategy
 		internal static function guideMe(fromX:Number,fromY:Number,toX:Number,toY:Number,agentStep:Number):void
 		{
 			var stetTimer:uint = getTimer();
-			trace("Start walking from : "+fromY,fromX);
+			//trace("Start walking from : "+fromY,fromX);
 			if(!isReachable(fromX,fromY,toX,toY,agentStep))
 			{
-				trace("*** Reset stepssssssssssssssss : "+blockedY,blockedX);
+				//trace("*** Reset stepssssssssssssssss : "+blockedY,blockedX);
 				startToGetAvailableRoat(blockedX,blockedY,toX,toY);
-				trace("Ifound this road : "+finalRoat+'  -  who is reachable from : '+fromY,fromX);
+				//trace("Ifound this road : "+finalRoat+'  -  who is reachable from : '+fromY,fromX);
 				var roadLength:uint = finalRoat.length ;
 				var selectedStep:uint = 1 ;
-				trace("roadLength : "+roadLength+' vs selectedStep : '+selectedStep);
+				//trace("roadLength : "+roadLength+' vs selectedStep : '+selectedStep);
 				while(roadLength>selectedStep && isReachable(fromX,fromY,0,0,agentStep,linierToPoint(finalRoat[selectedStep])))
 				{
-					trace(finalRoat[selectedStep]+" is reachable");
+					//trace(finalRoat[selectedStep]+" is reachable");
 					selectedStep++;
 				}
 				selectedStep--;
@@ -62,16 +62,16 @@ package strategy
 					if(roadLength<=selectedStep)
 					{
 						dx = dy = 0 ;
-						trace("No way");
+						//trace("No way");
 						return ;
 					}
 					//trace("The blockec point is : "+fromX,fromY+'  Last pint was : '+(fromX-dx),(fromY-dy));
 					//trace("Now I have to move forward : "+finalRoat);
-					trace("finalRoat.length : "+JSON.stringify(finalRoat)+' -> '+selectedStep+' vs '+finalRoat.length);
-					trace("finalRoat[0] : "+JSON.stringify(finalRoat));
+					//trace("finalRoat.length : "+JSON.stringify(finalRoat)+' -> '+selectedStep+' vs '+finalRoat.length);
+					//trace("finalRoat[0] : "+JSON.stringify(finalRoat));
 					toX = finalRoat[selectedStep]%w ;
 					toY = (finalRoat[selectedStep]-toX)/w;
-					trace("Next step is : "+toY,toX+" from "+fromY,fromX);
+					//trace("Next step is : "+toY,toX+" from "+fromY,fromX);
 					
 					deltaPoint = new Point(toX-firstX,toY-firstY);
 					distance = deltaPoint.length;
@@ -82,22 +82,22 @@ package strategy
 					}
 					else
 					{
-						throw "** finalRoat : "+finalRoat+' step '+linierToPoint(finalRoat[selectedStep])+" Is not diffrent from "+firstY+','+firstX;
+						//throw "** finalRoat : "+finalRoat+' step '+linierToPoint(finalRoat[selectedStep])+" Is not diffrent from "+firstY+','+firstX;
 						selectedStep++;
 						continue;
 					}
-					trace("deltaPoint : "+deltaPoint);
-					trace("distance : "+distance);
-					trace("It takes : "+(getTimer()-stetTimer));
-					trace("Dx,Dy : "+dx,dy);
+					//trace("deltaPoint : "+deltaPoint);
+					//trace("distance : "+distance);
+					//trace("It takes : "+(getTimer()-stetTimer));
+					//trace("Dx,Dy : "+dx,dy);
 					break;
 				}
 				return ;
 			}
 			else
 			{
-				trace("It takes : "+(getTimer()-stetTimer));
-				trace("The dx and dy are leading to the direct path");
+				//trace("It takes : "+(getTimer()-stetTimer));
+				//trace("The dx and dy are leading to the direct path");
 			}
 		}
 		
@@ -125,12 +125,12 @@ package strategy
 			if(distance==0)
 			{
 				dx = dy = 0 ;
-				trace("** "+toY,toX+' is reachable from '+firstY,firstX);
+				//trace("** "+toY,toX+' is reachable from '+firstY,firstX);
 				return true ;
 			}
 			dx = (deltaPoint.x/distance)*agentStep ;
 			dy = (deltaPoint.y/distance)*agentStep ;
-			trace("To going "+toY,toX+" from "+fromY,fromX+" and the delta is "+deltaPoint+" > "+(toX-fromX),(toY-fromY)+" you have to go this direction : "+dy,dx);
+			//trace("To going "+toY,toX+" from "+fromY,fromX+" and the delta is "+deltaPoint+" > "+(toX-fromX),(toY-fromY)+" you have to go this direction : "+dy,dx);
 			
 			moved = 0;
 			do{
@@ -141,13 +141,13 @@ package strategy
 				{
 					blockedX = uint(fromX-dx);
 					blockedY = uint(fromY-dy);
-					trace("** ** "+toY,toX+' is NOT NOT NOT NOT NOT NOT reachable from '+firstY,firstX);
+					//trace("** ** "+toY,toX+' is NOT NOT NOT NOT NOT NOT reachable from '+firstY,firstX);
 					return false ;
 				}
 			}while(moved<distance);
 			//trace("The direction changed : ",dx,dy);
 			//trace("It takes : "+(getTimer()-stetTimer));
-			trace("** "+toY,toX+' is reachable from '+firstY,firstX);
+			//trace("** "+toY,toX+' is reachable from '+firstY,firstX);
 			return true ;
 		}
 		
@@ -164,7 +164,7 @@ package strategy
 			finalL = pointToLinier(toX,toY);
 			controlRoat = new Vector.<Vector.<uint>>();
 			controlRoat.push(new Vector.<uint>());
-			trace("Create road from : "+fromY+' '+fromX+' > '+pointToLinier(fromX,fromY)+' to : '+toY,toX);
+			//trace("Create road from : "+fromY+' '+fromX+' > '+pointToLinier(fromX,fromY)+' to : '+toY,toX);
 			controlledTiles.push(pointToLinier(fromX,fromY));
 			controlRoat[0].push(controlledTiles[0]);
 			//trace("Start to control from : "+controlRoat[0]+" >> "+fromY,fromX);
@@ -237,7 +237,7 @@ package strategy
 				}
 				controlRoat.shift();
 			}
-			
+				
 			
 			return false ;
 		}
@@ -266,7 +266,7 @@ package strategy
 		{
 			//trace("is passable? : "+x,y);
 			passControllLin = y*w+x ;
-			trace("Controll passable : "+y,x+" = "+passControllLin);
+			//trace("Controll passable : "+y,x+" = "+passControllLin);
 			if(passControllLin<0 || passControllLin>=totalPixels)
 			{
 				return false ;

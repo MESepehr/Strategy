@@ -1,9 +1,22 @@
 package strategy
 {
+	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.geom.Point;
 
 	[Event(name="REQUEST_OTHER_AGENTS", type="strategy.AgentCall")]
+	/**The agent is death*/
+	[Event(name="IM_DEAD", type="strategy.AgentCall")]
+	/**Start to kill some one*/
+	[Event(name="START_TO_KILL", type="strategy.AgentCall")]
+	/**Kill some one imidiatly*/
+	[Event(name="KILL_SOME_ONE", type="strategy.AgentCall")]
+	/**I killed my enemy*/
+	[Event(name="I_KILLED_HIEM", type="strategy.AgentCall")]
+	/**I'm free and had no enemy*/
+	[Event(name="I_AM_FREE", type="strategy.AgentCall")]
+	/**I'm looking forward to my enemy*/
+	[Event(name="GUIDE_ME", type="strategy.AgentCall")]
 	public class AgentBase extends EventDispatcher
 	{
 		public var x:Number,y:Number;
@@ -13,7 +26,7 @@ package strategy
 		
 		private var otherAgents:Vector.<AgentBase> ;
 		
-		private var targetAgent:AgentBase ;
+		public var targetAgent:AgentBase ;
 		
 		/**This is the distance between each steps that user takes*/
 		private var runSpeed:Number;
@@ -22,7 +35,7 @@ package strategy
 		private var moveSpeed:Number ;
 		
 		/**0: sleep, 1:move, 2:Aware, 3:Kill , 4:run, 5:Attack*/
-		private var mode:uint;
+		public var mode:uint;
 		
 		/**This is the maximom range that user can hit his anamy from thaht distance*/
 		private var hitRange:Number;
@@ -62,6 +75,9 @@ package strategy
 			{
 				mode = 0 ;
 			}
+			
+			this.addEventListener(AgentCall.START_TO_KILL,kilHimInstantly,false,-1);
+			this.addEventListener(AgentCall.KILL_SOME_ONE,kilHimInstantly,false,-1);
 		}
 		
 		internal function setTeam(TeamColor:uint):void
@@ -116,17 +132,27 @@ package strategy
 			if(targetAgent==null || targetAgent.isDead())
 			{
 				targetAgent = null ;
+				this.dispatchEvent(new AgentCall(AgentCall.I_AM_FREE));
 				mode = 2;
 			}
 			else if(isInMyHitRange(targetAgent))
 			{
 				mode = 3 ;
-				targetAgent.hitMe(weaponDamage);
+				this.dispatchEvent(new AgentCall(AgentCall.START_TO_KILL));
 			}
 			else
 			{
 				mode = 4 ;
 				this.dispatchEvent(new AgentCall(AgentCall.GUIDE_ME,targetAgent,getStep()));
+			}
+		}
+		
+		/**This is auto listener to the START_TO_KILL event*/
+		public function kilHimInstantly(event:Event=null):void
+		{
+			if(targetAgent)
+			{
+				targetAgent.hitMe(weaponDamage);
 			}
 		}
 		
