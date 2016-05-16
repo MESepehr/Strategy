@@ -62,7 +62,7 @@
 		<!-- <transparent></transparent> -->
 
 		<!-- Whether the window is initially visible. Optional. Default false. -->
-		<!-- <visible></visible> -->
+		<visible>true</visible>
 
 		<!-- Whether the user can minimize the window. Optional. Default true. -->
 		<!-- <minimizable></minimizable> -->
@@ -115,9 +115,6 @@
 
 		<!-- Display Resolution for the app (either "standard" or "high"). Optional, OSX-only. Default "standard" -->
 		<!-- <requestedDisplayResolution></requestedDisplayResolution> -->
-	<autoOrients>false</autoOrients>
-        <fullScreen>false</fullScreen>
-        <visible>true</visible>
     </initialWindow>
 
 	<!-- We recommend omitting the supportedProfiles element, -->
