@@ -13,7 +13,6 @@ package
 		
 		public function StrategyGame()
 		{
-			super();
 			/*this.graphics.beginFill(0xff00ff);
 			this.graphics.drawCircle(0,0,100);*/
 			trace("Hi");

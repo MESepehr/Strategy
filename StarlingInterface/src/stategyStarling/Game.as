@@ -8,7 +8,6 @@ package stategyStarling
 	{
 		public function Game()
 		{
-			super();
 			var quad:Quad = new Quad(200, 200, Color.RED);
 			quad.x = 100;
 			quad.y = 50;
