@@ -57,7 +57,7 @@ package
 			debugBitmap.height = stage.stageHeight;
 			
 			
-			myStrategy.addAgent(8,5,0xff0000,true,false,1,2,1,200,30)
+			myStrategy.addAgent(8,5,0xff0000,true,false,0.5,0.9,0.5,200,30)
 			myStrategy.addAgent(3,5,0x0000ff)
 		}
 		
@@ -85,7 +85,7 @@ package
 		{
 			var X:Number = (debugBitmap.mouseX);
 			var Y:Number = (debugBitmap.mouseY);
-			myStrategy.addAgent(X,Y,0xff0000,true,false,1,2,1,200,30)
+			myStrategy.addAgent(X,Y,0xff0000,true,false,0.5,0.9,1,200,30)
 		}
 		
 		/**Step strategy floor forward and draw the debug bitmap fo it*/
