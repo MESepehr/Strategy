@@ -38,7 +38,7 @@ package strategy
 		public var mode:uint;
 		
 		/**This is the maximom range that user can hit his anamy from thaht distance*/
-		private var hitRange:Number;
+		public var hitRange:Number;
 		
 		/**Thsi is the user life*/
 		private var life:Number ;
