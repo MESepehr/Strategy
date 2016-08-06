@@ -54,7 +54,7 @@ package strategy
 				var roadLength:uint = finalRoat.length ;
 				var selectedStep:uint = 1 ;
 				//trace("roadLength : "+roadLength+' vs selectedStep : '+selectedStep);
-				while(roadLength>selectedStep && isReachable(fromX,fromY,0,0,agentStep,theAgentHitRage,linierToPoint(finalRoat[selectedStep])))
+				while(roadLength>selectedStep && isReachable(fromX,fromY,0,0,agentStep,theAgentHitRage,finalRoat[selectedStep]))
 				{
 					//trace(finalRoat[selectedStep]+" is reachable");
 					selectedStep++;
