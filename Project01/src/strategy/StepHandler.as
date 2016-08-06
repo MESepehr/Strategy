@@ -32,9 +32,9 @@ package strategy
 		
 		private static var controlledTiles:Vector.<uint> ;
 		
-		private static var finalRoat:Vector.<uint> ;
+		private static var finalRoat:Vector.<Point> ;
 		
-		private static var controlRoat:Vector.<Vector.<uint>> ;
+		private static var controlRoat:Vector.<Vector.<Point>> ;
 		
 		private static var passControllLin:uint; 
 		
@@ -72,8 +72,8 @@ package strategy
 					//trace("Now I have to move forward : "+finalRoat);
 					//trace("finalRoat.length : "+JSON.stringify(finalRoat)+' -> '+selectedStep+' vs '+finalRoat.length);
 					//trace("finalRoat[0] : "+JSON.stringify(finalRoat));
-					toX = finalRoat[selectedStep]%w ;
-					toY = (finalRoat[selectedStep]-toX)/w;
+					toX = finalRoat[selectedStep].x;
+					toY = finalRoat[selectedStep].y;
 					//trace("Next step is : "+toY,toX+" from "+fromY,fromX);
 					
 					deltaPoint = new Point(toX-fromX,toY-fromY);
@@ -161,16 +161,16 @@ package strategy
 		private static function startToGetAvailableRoat(fromX:Number,fromY:Number,toX:Number,toY:Number):void
 		{
 			controlledTiles = new Vector.<uint>();
-			finalRoat = new Vector.<uint>();
+			finalRoat = new Vector.<Point>();
 			//trace("Final road resets to get it from ",fromX,fromY+' - '+toX,toY);
 			finalX = toX;
 			finalY = toY;
 			finalL = pointToLinier(toX,toY);
-			controlRoat = new Vector.<Vector.<uint>>();
-			controlRoat.push(new Vector.<uint>());
+			controlRoat = new Vector.<Vector.<Point>>();
+			controlRoat.push(new Vector.<Point>());
 			//trace("Create road from : "+fromY+' '+fromX+' > '+pointToLinier(fromX,fromY)+' to : '+toY,toX);
 			controlledTiles.push(pointToLinier(fromX,fromY));
-			controlRoat[0].push(controlledTiles[0]);
+			controlRoat[0].push(new Point(fromX,fromY));
 			//trace("Start to control from : "+controlRoat[0]+" >> "+fromY,fromX);
 			getAvailableRoat();
 			finalRoat.reverse();
@@ -190,7 +190,7 @@ package strategy
 			{
 				//trace("Its time to : "+controlRoat[0]+' from '+controlRoat.length);
 				//trace("current roat : "+JSON.stringify(controlRoat,null,' '));
-				if(controllFirstTile && (controlRoat[0][0]==finalL || isReachable(0,0,0,0,0.5,1,linierToPoint(finalL),linierToPoint(controlRoat[0][0]))))
+				if(controllFirstTile && (pointToLinier(controlRoat[0][0].x,controlRoat[0][0].y)==finalL || isReachable(0,0,0,0,0.5,1,linierToPoint(finalL),controlRoat[0][0])))
 				{
 					finalRoat = controlRoat[0].concat();
 					//throw "Final road is "+finalRoat+'  vs  '+finalL+'  >>>  '+controlRoat[0][0]+'    >>>>>    '+controlRoat[0];
@@ -199,7 +199,7 @@ package strategy
 				}
 				controllFirstTile = true ;
 				//else
-				currentL = controlRoat[0][0] ;
+				currentL = pointToLinier(controlRoat[0][0].x,controlRoat[0][0].y) ;
 				for(i = -1 ; i<2 ; i++)
 				{
 					for(j = -1 ; j<2 ; j++)
@@ -216,7 +216,7 @@ package strategy
 								var pose2:Point = linierToPoint(currentL);
 								
 								controlRoat.push(controlRoat[0].concat());
-								controlRoat[controlRoat.length-1].unshift(myLin);
+								controlRoat[controlRoat.length-1].unshift(linierToPoint(myLin));
 							//	trace(">>> controlRoat[controlRoat.length-1] : "+controlRoat[controlRoat.length-1]);
 								
 								if(myLin == finalL)
