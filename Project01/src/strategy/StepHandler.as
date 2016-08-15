@@ -1,4 +1,4 @@
-package strategy
+﻿package strategy
 {
 	import flash.geom.Point;
 	import flash.utils.getTimer;
@@ -19,7 +19,7 @@ package strategy
 		internal static var dx:Number,
 							dy:Number ;
 							
-		private static var finalX:uint,finalY:uint,finalL:uint,firstX:uint,firstY:uint;
+		private static var finalX:Number,finalY:Number,finalL:uint,firstX:Number,firstY:Number;
 		
 		/**The position of blocked tile in the path*/
 		internal static var blockedX:Number,blockedY:Number;
