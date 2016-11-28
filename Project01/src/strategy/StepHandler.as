@@ -143,8 +143,8 @@
 				fromY += dy ;
 				if(!isPassable(fromX,fromY))
 				{
-					blockedX = uint(fromX-dx);
-					blockedY = uint(fromY-dy);
+					blockedX = (fromX-dx);
+					blockedY = (fromY-dy);
 					//trace("** ** "+toY,toX+' is NOT NOT NOT NOT NOT NOT reachable from '+firstY,firstX);
 					return false ;
 				}
