@@ -40,6 +40,7 @@
 		
 		/**This is the agent hit range*/
 		private static var agentRange:Number ;
+		private static var currentP:Point;
 		
 		/**This will change the dx and*/
 		internal static function guideMe(fromX:Number,fromY:Number,toX:Number,toY:Number,agentStep:Number,theAgentHitRage:Number):void
@@ -183,6 +184,8 @@
 		{
 			var myLin:int ;
 			var currentL:int ;
+
+			var controllX:Number,controllY:Number;
 			
 			var controllFirstTile:Boolean = false ;
 			
@@ -199,7 +202,8 @@
 				}
 				controllFirstTile = true ;
 				//else
-				currentL = pointToLinier(controlRoat[0][0].x,controlRoat[0][0].y) ;
+				currentP = controlRoat[0][0] ;
+				currentL = pointToLinier(currentP.x,currentP.y) ;
 				for(i = -1 ; i<2 ; i++)
 				{
 					for(j = -1 ; j<2 ; j++)
@@ -207,16 +211,18 @@
 						if(i!=0 || j!=0)
 						{
 							myLin = currentL+i+j*w ;
+							controllX = currentP.x+i;
+							controllY = currentP.y+j;
 						//	trace("controlRoat[0][0] : "+controlRoat[0][0]+' , '+myLin);
 						//	trace("controlledTiles : "+myLin);
-							if(currentL+i>=0 && uint((currentL+i)/w) == uint((currentL)/w) && myLin>=0 && myLin<totalPixels && controlledTiles.indexOf(myLin)==-1 && !blockedList[myLin])
+							if((controllX>=0 && controllX<w && controllY>=0 && controllY<h) && controlledTiles.indexOf(myLin)==-1 && !blockedList[myLin])
 							{
 								controlledTiles.push(myLin);
-								var pose1:Point = linierToPoint(myLin);
-								var pose2:Point = linierToPoint(currentL);
+								//var pose1:Point = linierToPoint(myLin);
+								//var pose2:Point = linierToPoint(currentL);
 								
 								controlRoat.push(controlRoat[0].concat());
-								controlRoat[controlRoat.length-1].unshift(linierToPoint(myLin));
+								controlRoat[controlRoat.length-1].unshift(new Point(controllX,controllY));
 							//	trace(">>> controlRoat[controlRoat.length-1] : "+controlRoat[controlRoat.length-1]);
 								
 								if(myLin == finalL)
