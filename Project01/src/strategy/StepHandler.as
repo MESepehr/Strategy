@@ -254,6 +254,7 @@
 				controlRoat.shift();
 				if(iFoundedMyWay)
 				{
+					finalRoat = controlRoat[0].concat();
 					break;
 				}
 			}
