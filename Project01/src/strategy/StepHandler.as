@@ -53,7 +53,7 @@
 				startToGetAvailableRoat(blockedX,blockedY,toX,toY);
 				//trace("Ifound this road : "+finalRoat+'  -  who is reachable from : '+fromY,fromX);
 				var roadLength:uint = finalRoat.length ;
-				var selectedStep:uint = 1 ;
+				var selectedStep:uint = 0 ;
 				//trace("roadLength : "+roadLength+' vs selectedStep : '+selectedStep);
 				while(roadLength>selectedStep && isReachable(fromX,fromY,0,0,agentStep,theAgentHitRage,finalRoat[selectedStep]))
 				{
@@ -126,7 +126,7 @@
 			firstX = fromX;
 			firstY = fromY;
 			deltaPoint = new Point(toX-fromX,toY-fromY);
-			distance = deltaPoint.length;
+			distance = Math.max(1,deltaPoint.length);
 			if(distance==0)
 			{
 				dx = dy = 0 ;
@@ -188,12 +188,14 @@
 			var controllX:Number,controllY:Number;
 			
 			var controllFirstTile:Boolean = false ;
+
+			var iFoundedMyWay:Boolean = false ;
 			
 			while(controlRoat.length>0)
 			{
 				//trace("Its time to : "+controlRoat[0]+' from '+controlRoat.length);
 				//trace("current roat : "+JSON.stringify(controlRoat,null,' '));
-				if(controllFirstTile && (pointToLinier(controlRoat[0][0].x,controlRoat[0][0].y)==finalL || isReachable(0,0,0,0,0.5,1,linierToPoint(finalL),controlRoat[0][0])))
+				if(controllFirstTile && (pointToLinier(controlRoat[0][0].x,controlRoat[0][0].y)==finalL || isReachable(0,0,0,0,0.5,1,new Point(finalX,finalY),controlRoat[0][0])))
 				{
 					finalRoat = controlRoat[0].concat();
 					//throw "Final road is "+finalRoat+'  vs  '+finalL+'  >>>  '+controlRoat[0][0]+'    >>>>>    '+controlRoat[0];
@@ -225,11 +227,12 @@
 								controlRoat[controlRoat.length-1].unshift(new Point(controllX,controllY));
 							//	trace(">>> controlRoat[controlRoat.length-1] : "+controlRoat[controlRoat.length-1]);
 								
-								if(myLin == finalL)
+								if(myLin == finalL)//I should controll the accesible points here to. it makes performance better
 								{
 									controlRoat.reverse();
 									controlRoat.unshift(null);
 									i=j=100;
+									iFoundedMyWay = true ;
 								}
 								/*if(isReachable(0,0,0,0,1,linierToPoint(finalL),linierToPoint(myLin)))
 								{
@@ -249,10 +252,14 @@
 					}
 				}
 				controlRoat.shift();
+				if(iFoundedMyWay)
+				{
+					break;
+				}
 			}
 				
 			
-			return false ;
+			return iFoundedMyWay ;
 		}
 		
 		
