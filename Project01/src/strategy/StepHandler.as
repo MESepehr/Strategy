@@ -78,7 +78,7 @@
 					//trace("Next step is : "+toY,toX+" from "+fromY,fromX);
 					
 					deltaPoint = new Point(toX-fromX,toY-fromY);
-					distance = deltaPoint.length;
+					distance = Math.max(1,deltaPoint.length);
 					if(distance!=0)
 					{
 						dx = (deltaPoint.x/distance)*agentStep;
