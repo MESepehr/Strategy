@@ -53,7 +53,7 @@
 				startToGetAvailableRoat(blockedX,blockedY,toX,toY);
 				//trace("Ifound this road : "+finalRoat+'  -  who is reachable from : '+fromY,fromX);
 				var roadLength:uint = finalRoat.length ;
-				var selectedStep:uint = 0 ;
+				var selectedStep:uint = 1 ;
 				if(roadLength<=1)
 				{
 					dx = dy = 0 ;
