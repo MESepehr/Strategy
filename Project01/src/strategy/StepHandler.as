@@ -124,11 +124,17 @@
 				fromX = fromPoint.x;
 				fromY = fromPoint.y; 
 			}
-			blockedX = blockedY = -1 ;
 			//trace("fromX : "+fromX);
 			//trace("fromY : "+fromY);
 			//trace("toY : "+toY);
 			//trace("toX : "+toX);
+			//I have to add new contidion to detect near tiles
+			var tileIdfromX:uint = uint(fromX);
+			var tileIdfromY:uint = uint(fromY);
+			var tileIdtoX:uint = uint(toX);
+			var tileIdtoY:uint = uint(toY);
+
+
 			firstX = fromX;
 			firstY = fromY;
 			deltaPoint = new Point(toX-fromX,toY-fromY);
@@ -142,7 +148,15 @@
 			dx = (deltaPoint.x/distance)*tileCheckerRange ;
 			dy = (deltaPoint.y/distance)*tileCheckerRange ;
 			//trace("To going "+toY,toX+" from "+fromY,fromX+" and the delta is "+deltaPoint+" > "+(toX-fromX),(toY-fromY)+" you have to go this direction : "+dy,dx);
-			
+
+			if(Math.abs(tileIdfromX-tileIdtoX)<=1 && Math.abs(tileIdfromY-tileIdtoY)<=1)
+			{
+				blockedX = fromX;
+				blockedY = fromY;
+				return isPassable(tileIdtoX,tileIdtoY);
+			}
+			blockedX = blockedY = -1 ;
+
 			moved = 0;
 			do{
 				moved += tileCheckerRange ;
