@@ -54,13 +54,19 @@
 				//trace("Ifound this road : "+finalRoat+'  -  who is reachable from : '+fromY,fromX);
 				var roadLength:uint = finalRoat.length ;
 				var selectedStep:uint = 0 ;
+				if(roadLength<=1)
+				{
+					dx = dy = 0 ;
+					trace("I cannot walk from here");
+					return ;
+				}
 				//trace("roadLength : "+roadLength+' vs selectedStep : '+selectedStep);
 				while(roadLength>selectedStep && isReachable(fromX,fromY,0,0,agentStep,theAgentHitRage,finalRoat[selectedStep]))
 				{
 					//trace(finalRoat[selectedStep]+" is reachable");
 					selectedStep++;
 				}
-				selectedStep--;
+				selectedStep = Math.max(selectedStep-1,1);
 				while(true)
 				{
 					if(roadLength<=selectedStep)
@@ -128,11 +134,11 @@
 			//trace("fromY : "+fromY);
 			//trace("toY : "+toY);
 			//trace("toX : "+toX);
-			//I have to add new contidion to detect near tiles
-			var tileIdfromX:uint = uint(fromX);
-			var tileIdfromY:uint = uint(fromY);
-			var tileIdtoX:uint = uint(toX);
-			var tileIdtoY:uint = uint(toY);
+				//I have to add new contidion to detect near tiles
+			//var tileIdfromX:uint = uint(fromX);
+			//var tileIdfromY:uint = uint(fromY);
+			//var tileIdtoX:uint = uint(toX);
+			//var tileIdtoY:uint = uint(toY);
 
 
 			firstX = fromX;
@@ -149,12 +155,13 @@
 			dy = (deltaPoint.y/distance)*tileCheckerRange ;
 			//trace("To going "+toY,toX+" from "+fromY,fromX+" and the delta is "+deltaPoint+" > "+(toX-fromX),(toY-fromY)+" you have to go this direction : "+dy,dx);
 
-			if(Math.abs(tileIdfromX-tileIdtoX)<=1 && Math.abs(tileIdfromY-tileIdtoY)<=1)
-			{
-				blockedX = fromX;
-				blockedY = fromY;
-				return isPassable(tileIdtoX,tileIdtoY);
-			}
+				//Below line makes agent to trow the wall some times
+			//if(Math.abs(tileIdfromX-tileIdtoX)<=1 && Math.abs(tileIdfromY-tileIdtoY)<=1)
+			//{
+			//	blockedX = fromX;
+			//	blockedY = fromY;
+			//	return isPassable(tileIdtoX,tileIdtoY);
+			//}
 			blockedX = blockedY = -1 ;
 
 			moved = 0;
