@@ -1,4 +1,4 @@
-package strategy
+﻿package strategy
 {
 	import flash.geom.Point;
 	import flash.utils.getTimer;
@@ -19,10 +19,10 @@ package strategy
 		internal static var dx:Number,
 							dy:Number ;
 							
-		private static var finalX:uint,finalY:uint,finalL:uint,firstX:uint,firstY:uint;
+		private static var finalX:Number,finalY:Number,finalL:uint,firstX:Number,firstY:Number;
 		
 		/**The position of blocked tile in the path*/
-		internal static var blockedX:int,blockedY:int;
+		internal static var blockedX:Number,blockedY:Number;
 		
 		//Second while variables
 		/**Controll how much Agent moved*/
@@ -32,31 +32,41 @@ package strategy
 		
 		private static var controlledTiles:Vector.<uint> ;
 		
-		private static var finalRoat:Vector.<uint> ;
+		private static var finalRoat:Vector.<Point> ;
 		
-		private static var controlRoat:Vector.<Vector.<uint>> ;
+		private static var controlRoat:Vector.<Vector.<Point>> ;
 		
 		private static var passControllLin:uint; 
 		
+		/**This is the agent hit range*/
+		private static var agentRange:Number ;
+		private static var currentP:Point;
+		
 		/**This will change the dx and*/
-		internal static function guideMe(fromX:Number,fromY:Number,toX:Number,toY:Number,agentStep:Number):void
+		internal static function guideMe(fromX:Number,fromY:Number,toX:Number,toY:Number,agentStep:Number,theAgentHitRage:Number):void
 		{
 			var stetTimer:uint = getTimer();
 			//trace("Start walking from : "+fromY,fromX);
-			if(!isReachable(fromX,fromY,toX,toY,agentStep))
+			if(!isReachable(fromX,fromY,toX,toY,agentStep,theAgentHitRage))
 			{
 				//trace("*** Reset stepssssssssssssssss : "+blockedY,blockedX);
 				startToGetAvailableRoat(blockedX,blockedY,toX,toY);
 				//trace("Ifound this road : "+finalRoat+'  -  who is reachable from : '+fromY,fromX);
 				var roadLength:uint = finalRoat.length ;
 				var selectedStep:uint = 1 ;
+				if(roadLength<=1)
+				{
+					dx = dy = 0 ;
+					trace("I cannot walk from here");
+					return ;
+				}
 				//trace("roadLength : "+roadLength+' vs selectedStep : '+selectedStep);
-				while(roadLength>selectedStep && isReachable(fromX,fromY,0,0,agentStep,linierToPoint(finalRoat[selectedStep])))
+				while(roadLength>selectedStep && isReachable(fromX,fromY,0,0,agentStep,theAgentHitRage,finalRoat[selectedStep]))
 				{
 					//trace(finalRoat[selectedStep]+" is reachable");
 					selectedStep++;
 				}
-				selectedStep--;
+				selectedStep = Math.max(selectedStep-1,1);
 				while(true)
 				{
 					if(roadLength<=selectedStep)
@@ -69,12 +79,12 @@ package strategy
 					//trace("Now I have to move forward : "+finalRoat);
 					//trace("finalRoat.length : "+JSON.stringify(finalRoat)+' -> '+selectedStep+' vs '+finalRoat.length);
 					//trace("finalRoat[0] : "+JSON.stringify(finalRoat));
-					toX = finalRoat[selectedStep]%w ;
-					toY = (finalRoat[selectedStep]-toX)/w;
+					toX = finalRoat[selectedStep].x;
+					toY = finalRoat[selectedStep].y;
 					//trace("Next step is : "+toY,toX+" from "+fromY,fromX);
 					
-					deltaPoint = new Point(toX-firstX,toY-firstY);
-					distance = deltaPoint.length;
+					deltaPoint = new Point(toX-fromX,toY-fromY);
+					distance = Math.max(1,deltaPoint.length);
 					if(distance!=0)
 					{
 						dx = (deltaPoint.x/distance)*agentStep;
@@ -85,6 +95,12 @@ package strategy
 						//throw "** finalRoat : "+finalRoat+' step '+linierToPoint(finalRoat[selectedStep])+" Is not diffrent from "+firstY+','+firstX;
 						selectedStep++;
 						continue;
+					}
+					if(!isPassable(fromX+dx,fromY+dy))
+					{
+						//Debugger. The agend cannot hit a wall any more
+						dx = toX-fromX;
+						dy = toY-fromY;
 					}
 					//trace("deltaPoint : "+deltaPoint);
 					//trace("distance : "+distance);
@@ -101,8 +117,9 @@ package strategy
 			}
 		}
 		
-		private static function isReachable(fromX:Number,fromY:Number,toX:Number,toY:Number,agentStep:Number,toPoint:Point=null,fromPoint:Point=null):Boolean
+		private static function isReachable(fromX:Number,fromY:Number,toX:Number,toY:Number,agentStep:Number,agentHitRange:Number,toPoint:Point=null,fromPoint:Point=null):Boolean
 		{
+			var tileCheckerRange:Number = agentStep ;
 			if(toPoint)
 			{
 				toX = toPoint.x;
@@ -113,38 +130,68 @@ package strategy
 				fromX = fromPoint.x;
 				fromY = fromPoint.y; 
 			}
-			blockedX = blockedY = -1 ;
 			//trace("fromX : "+fromX);
 			//trace("fromY : "+fromY);
 			//trace("toY : "+toY);
 			//trace("toX : "+toX);
+				//I have to add new contidion to detect near tiles
+			//var tileIdfromX:uint = uint(fromX);
+			//var tileIdfromY:uint = uint(fromY);
+			//var tileIdtoX:uint = uint(toX);
+			//var tileIdtoY:uint = uint(toY);
+
+
 			firstX = fromX;
 			firstY = fromY;
 			deltaPoint = new Point(toX-fromX,toY-fromY);
-			distance = deltaPoint.length;
+			distance = Math.max(1,deltaPoint.length);
 			if(distance==0)
 			{
 				dx = dy = 0 ;
 				//trace("** "+toY,toX+' is reachable from '+firstY,firstX);
 				return true ;
 			}
-			dx = (deltaPoint.x/distance)*agentStep ;
-			dy = (deltaPoint.y/distance)*agentStep ;
+			dx = (deltaPoint.x/distance)*tileCheckerRange ;
+			dy = (deltaPoint.y/distance)*tileCheckerRange ;
 			//trace("To going "+toY,toX+" from "+fromY,fromX+" and the delta is "+deltaPoint+" > "+(toX-fromX),(toY-fromY)+" you have to go this direction : "+dy,dx);
-			
+
+				//Below line makes agent to trow the wall some times
+			//if(Math.abs(tileIdfromX-tileIdtoX)<=1 && Math.abs(tileIdfromY-tileIdtoY)<=1)
+			//{
+			//	blockedX = fromX;
+			//	blockedY = fromY;
+			//	return isPassable(tileIdtoX,tileIdtoY);
+			//}
+			blockedX = blockedY = -1 ;
+
 			moved = 0;
+			var whileController:int = 500 ;
 			do{
-				moved += agentStep ;
+				moved += tileCheckerRange ;
 				fromX += dx ;
 				fromY += dy ;
 				if(!isPassable(fromX,fromY))
 				{
-					blockedX = uint(fromX-dx);
-					blockedY = uint(fromY-dy);
+					blockedX = (fromX-dx);
+					blockedY = (fromY-dy);
 					//trace("** ** "+toY,toX+' is NOT NOT NOT NOT NOT NOT reachable from '+firstY,firstX);
 					return false ;
 				}
-			}while(moved<distance);
+				whileController--;
+			}while(moved<distance-agentHitRange && whileController>0);
+			if(whileController<0)
+			{
+				trace("What happens??");
+				trace("-moved:"+moved);
+				trace("-tileCheckerRange:"+tileCheckerRange);
+				trace("-dx:"+dx);
+				trace("-dy:"+dy);
+				trace("-fromX:"+fromX);
+				trace("-fromY:"+fromY);
+				trace("-distance:"+distance);
+				trace("-agentHitRange:"+agentHitRange);
+				trace("-(distance-agentHitRange):"+(distance-agentHitRange));
+			}
 			//trace("The direction changed : ",dx,dy);
 			//trace("It takes : "+(getTimer()-stetTimer));
 			//trace("** "+toY,toX+' is reachable from '+firstY,firstX);
@@ -154,19 +201,19 @@ package strategy
 	//////////////////////////Find the available roat 
 		
 		/**Catch the finded roat from the list finalRoat*/
-		private static function startToGetAvailableRoat(fromX:uint,fromY:uint,toX:uint,toY:uint):void
+		private static function startToGetAvailableRoat(fromX:Number,fromY:Number,toX:Number,toY:Number):void
 		{
 			controlledTiles = new Vector.<uint>();
-			finalRoat = new Vector.<uint>();
+			finalRoat = new Vector.<Point>();
 			//trace("Final road resets to get it from ",fromX,fromY+' - '+toX,toY);
 			finalX = toX;
 			finalY = toY;
 			finalL = pointToLinier(toX,toY);
-			controlRoat = new Vector.<Vector.<uint>>();
-			controlRoat.push(new Vector.<uint>());
+			controlRoat = new Vector.<Vector.<Point>>();
+			controlRoat.push(new Vector.<Point>());
 			//trace("Create road from : "+fromY+' '+fromX+' > '+pointToLinier(fromX,fromY)+' to : '+toY,toX);
 			controlledTiles.push(pointToLinier(fromX,fromY));
-			controlRoat[0].push(controlledTiles[0]);
+			controlRoat[0].push(new Point(fromX,fromY));
 			//trace("Start to control from : "+controlRoat[0]+" >> "+fromY,fromX);
 			getAvailableRoat();
 			finalRoat.reverse();
@@ -179,20 +226,28 @@ package strategy
 		{
 			var myLin:int ;
 			var currentL:int ;
+
+			var controllX:Number,controllY:Number;
+			
+			var controllFirstTile:Boolean = false ;
+
+			var iFoundedMyWay:Boolean = false ;
 			
 			while(controlRoat.length>0)
 			{
 				//trace("Its time to : "+controlRoat[0]+' from '+controlRoat.length);
 				//trace("current roat : "+JSON.stringify(controlRoat,null,' '));
-				if(controlRoat[0][0]==finalL || isReachable(0,0,0,0,1,linierToPoint(finalL),linierToPoint(controlRoat[0][0])))
+				if(controllFirstTile && (pointToLinier(controlRoat[0][0].x,controlRoat[0][0].y)==finalL || isReachable(0,0,0,0,0.5,1,new Point(finalX,finalY),controlRoat[0][0])))
 				{
 					finalRoat = controlRoat[0].concat();
 					//throw "Final road is "+finalRoat+'  vs  '+finalL+'  >>>  '+controlRoat[0][0]+'    >>>>>    '+controlRoat[0];
 					controlRoat = null ;
 					return true ;
 				}
+				controllFirstTile = true ;
 				//else
-				currentL = controlRoat[0][0] ;
+				currentP = controlRoat[0][0] ;
+				currentL = pointToLinier(currentP.x,currentP.y) ;
 				for(i = -1 ; i<2 ; i++)
 				{
 					for(j = -1 ; j<2 ; j++)
@@ -200,23 +255,26 @@ package strategy
 						if(i!=0 || j!=0)
 						{
 							myLin = currentL+i+j*w ;
+							controllX = currentP.x+i;
+							controllY = currentP.y+j;
 						//	trace("controlRoat[0][0] : "+controlRoat[0][0]+' , '+myLin);
 						//	trace("controlledTiles : "+myLin);
-							if(currentL+i>=0 && uint((currentL+i)/w) == uint((currentL)/w) && myLin>=0 && myLin<totalPixels && controlledTiles.indexOf(myLin)==-1 && !blockedList[myLin])
+							if((controllX>=0 && controllX<w && controllY>=0 && controllY<h) && controlledTiles.indexOf(myLin)==-1 && !blockedList[myLin])
 							{
 								controlledTiles.push(myLin);
-								var pose1:Point = linierToPoint(myLin);
-								var pose2:Point = linierToPoint(currentL);
+								//var pose1:Point = linierToPoint(myLin);
+								//var pose2:Point = linierToPoint(currentL);
 								
 								controlRoat.push(controlRoat[0].concat());
-								controlRoat[controlRoat.length-1].unshift(myLin);
+								controlRoat[controlRoat.length-1].unshift(new Point(controllX,controllY));
 							//	trace(">>> controlRoat[controlRoat.length-1] : "+controlRoat[controlRoat.length-1]);
 								
-								if(myLin == finalL)
+								if(myLin == finalL)//I should controll the accesible points here to. it makes performance better
 								{
 									controlRoat.reverse();
 									controlRoat.unshift(null);
 									i=j=100;
+									iFoundedMyWay = true ;
 								}
 								/*if(isReachable(0,0,0,0,1,linierToPoint(finalL),linierToPoint(myLin)))
 								{
@@ -236,10 +294,15 @@ package strategy
 					}
 				}
 				controlRoat.shift();
+				if(iFoundedMyWay)
+				{
+					finalRoat = controlRoat[0].concat();
+					break;
+				}
 			}
 				
 			
-			return false ;
+			return iFoundedMyWay ;
 		}
 		
 		

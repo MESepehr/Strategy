@@ -38,7 +38,7 @@ package strategy
 		public var mode:uint;
 		
 		/**This is the maximom range that user can hit his anamy from thaht distance*/
-		private var hitRange:Number;
+		public var hitRange:Number;
 		
 		/**Thsi is the user life*/
 		private var life:Number ;
@@ -52,7 +52,7 @@ package strategy
 		/**It is true if the agent has a team*/
 		public var hasTeam:Boolean = false ;
 		
-		public function AgentBase(x0:Number,y0:Number,TeamColor:uint,IsPassable:Boolean=true,CanMove:Boolean=true,myMoveSteps:Number=0.5,myRunSteps:Number=1,myHitRange:Number=1,myLife:Number=100,myWeaponDamage:Number=20)
+		public function AgentBase(x0:Number,y0:Number,TeamColor:uint,IsPassable:Boolean=true,CanMove:Boolean=true,myMoveSteps:Number=0.5,myRunSteps:Number=0.9,myHitRange:Number=1,myLife:Number=100,myWeaponDamage:Number=20)
 		{
 			x = x0 ;
 			y = y0 ;
@@ -60,6 +60,10 @@ package strategy
 			{
 				x = uint(x);
 				y = uint(y);
+			}
+			if(myMoveSteps>=1 || myRunSteps>=1)
+			{
+				throw "The move and run steps cannot be more than 1" ;
 			}
 			moveSpeed = myMoveSteps ;
 			runSpeed = myRunSteps ;
