@@ -165,6 +165,7 @@
 			blockedX = blockedY = -1 ;
 
 			moved = 0;
+			var whileController:int = 500 ;
 			do{
 				moved += tileCheckerRange ;
 				fromX += dx ;
@@ -176,7 +177,21 @@
 					//trace("** ** "+toY,toX+' is NOT NOT NOT NOT NOT NOT reachable from '+firstY,firstX);
 					return false ;
 				}
-			}while(moved<distance-agentHitRange);
+				whileController--;
+			}while(moved<distance-agentHitRange && whileController>0);
+			if(whileController<0)
+			{
+				trace("What happens??");
+				trace("-moved:"+moved);
+				trace("-tileCheckerRange:"+tileCheckerRange);
+				trace("-dx:"+dx);
+				trace("-dy:"+dy);
+				trace("-fromX:"+fromX);
+				trace("-fromY:"+fromY);
+				trace("-distance:"+distance);
+				trace("-agentHitRange:"+agentHitRange);
+				trace("-(distance-agentHitRange):"+(distance-agentHitRange));
+			}
 			//trace("The direction changed : ",dx,dy);
 			//trace("It takes : "+(getTimer()-stetTimer));
 			//trace("** "+toY,toX+' is reachable from '+firstY,firstX);
