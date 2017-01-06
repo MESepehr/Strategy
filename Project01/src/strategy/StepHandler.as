@@ -90,6 +90,12 @@
 						selectedStep++;
 						continue;
 					}
+					if(!isPassable(fromX+dx,fromY+dy))
+					{
+						//Debugger. The agend cannot hit a wall any more
+						dx = toX-fromX;
+						dy = toY-fromY;
+					}
 					//trace("deltaPoint : "+deltaPoint);
 					//trace("distance : "+distance);
 					//trace("It takes : "+(getTimer()-stetTimer));
