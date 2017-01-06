@@ -1,4 +1,4 @@
-package
+﻿package
 {
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -7,6 +7,7 @@ package
 	import flash.events.MouseEvent;
 	
 	import strategy.StrategyFloor;
+	import flash.utils.setInterval;
 	
 	public class ZombyLand extends Sprite
 	{
@@ -17,7 +18,7 @@ package
 		
 		var debugBitmap:Bitmap ; 
 		
-		private const W:uint = 10,H:uint=10;
+		private const W:uint = 100,H:uint=100;
 		
 		public function ZombyLand()
 		{
@@ -51,6 +52,9 @@ package
 			myStrategy.addBuilding(3,8,1,1,0xffffff);
 			myStrategy.addBuilding(2,8,1,1,0xffffff);
 			
+			myStrategy.addBuilding(W/2,H/2,30,1,0xffffff);
+			myStrategy.addBuilding(30,30,20,20,0xffffff);
+			
 			debugBitmap = myStrategy.debugBitmap() ;
 			this.addChild(debugBitmap);
 			debugBitmap.width = stage.stageWidth;
@@ -59,6 +63,24 @@ package
 			
 			myStrategy.addAgent(8,5,0xff0000,true,false,0.5,0.9,0.5,200,30)
 			myStrategy.addAgent(3,5,0x0000ff)
+			
+			setInterval(addNewAgent,500);
+		}
+		
+		private function addNewAgent():void
+		{
+			var placeX:uint = Math.floor(W*Math.random());
+			var placeY:uint = Math.floor(H*Math.random());
+			
+			if(Math.floor(Math.random()*2)==0)
+			{
+				myStrategy.addAgent(placeX,placeY,0xff0000,true,true,0.5,0.9,0.5,200,30);
+			}
+			else
+			{
+				myStrategy.addAgent(placeX,placeY,0x0000ff);
+			}
+			trace(myStrategy.agents.length);
 		}
 		
 		protected function addBuilding(event:MouseEvent):void
